@@ -13,8 +13,8 @@ export class Expense {
   @Prop({ required: true })
   date!: Date;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId!: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  userId?: Types.ObjectId;
 }
 
 export type ExpenseDocument = Expense & Document;

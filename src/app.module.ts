@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { IncomesModule } from './incomes/incomes.module';
 import { ExpensesModule } from './expenses/expenses.module';
+import { BalanceModule } from './balance/balance.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ExpensesModule } from './expenses/expenses.module';
     NotificationsModule,
     IncomesModule,
     ExpensesModule,
+    BalanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
