@@ -1,6 +1,6 @@
 // src/incomes/dto/create-income.dto.ts
 
-import { IsNotEmpty, IsNumber, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsDateString, IsString } from 'class-validator';
 
 export class CreateIncomeDto {
   @IsNotEmpty()
@@ -13,4 +13,8 @@ export class CreateIncomeDto {
   @IsDateString()
   @IsNotEmpty()
   date!: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  category!: string;
 }

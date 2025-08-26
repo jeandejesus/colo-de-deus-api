@@ -23,12 +23,25 @@ export class IncomesService {
     return createdIncome;
   }
 
-  async findAll(): Promise<Income[]> {
-    return this.incomeModel.find().exec();
+  async findAll(startDate?: string, endDate?: string): Promise<Income[]> {
+    const filter: any = {};
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) {
+        filter.date.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        filter.date.$lte = new Date(endDate);
+      }
+    }
+    return this.incomeModel.find(filter).populate('category').exec();
   }
 
   async findOne(id: string): Promise<Income> {
-    const income = await this.incomeModel.findById(id).exec();
+    const income = await this.incomeModel
+      .findById(id)
+      .populate('category')
+      .exec();
     if (!income) {
       throw new NotFoundException(`Income with ID "${id}" not found`);
     }

@@ -11,6 +11,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 @Controller('incomes')
@@ -23,8 +24,11 @@ export class IncomesController {
   }
 
   @Get()
-  findAll() {
-    return this.incomesService.findAll();
+  findAll(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.incomesService.findAll(startDate, endDate);
   }
 
   @Get(':id')

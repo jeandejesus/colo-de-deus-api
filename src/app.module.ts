@@ -8,6 +8,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { IncomesModule } from './incomes/incomes.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { BalanceModule } from './balance/balance.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BalanceModule } from './balance/balance.module';
     IncomesModule,
     ExpensesModule,
     BalanceModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

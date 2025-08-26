@@ -24,12 +24,25 @@ export class ExpensesService {
     return createdExpense;
   }
 
-  async findAll(): Promise<Expense[]> {
-    return this.expenseModel.find().exec();
-  }
+  async findAll(startDate?: string, endDate?: string): Promise<Expense[]> {
+    const filter: any = {};
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) {
+        filter.date.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        filter.date.$lte = new Date(endDate);
+      }
+    }
 
+    return this.expenseModel.find(filter).populate('category').exec(); // ⬅️ Adicione .populate()
+  }
   async findOne(id: string): Promise<Expense> {
-    const expense = await this.expenseModel.findById(id).exec();
+    const expense = await this.expenseModel
+      .findById(id)
+      .populate('category')
+      .exec();
     if (!expense) {
       throw new NotFoundException(`Expense with ID "${id}" not found`);
     }
