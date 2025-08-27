@@ -3,18 +3,21 @@
 import { IsNotEmpty, IsNumber, IsDateString, IsString } from 'class-validator';
 
 export class CreateExpensesDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'A descrição não pode ser vazia.' })
   description!: string;
 
-  @IsNumber()
-  @IsNotEmpty()
+  @IsNumber({}, { message: 'O valor deve ser um número.' })
+  @IsNotEmpty({ message: 'O valor não pode ser vazio.' })
   value!: number;
 
-  @IsDateString()
-  @IsNotEmpty()
+  @IsDateString(
+    {},
+    { message: 'A data deve ser uma string de data válida (ISO 8601).' },
+  )
+  @IsNotEmpty({ message: 'A data não pode ser vazia.' })
   date!: Date;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'A categoria não pode ser vazia.' })
+  @IsString({ message: 'A categoria deve ser uma string.' })
   category!: string;
 }

@@ -57,8 +57,7 @@ export class RegisterUserDto {
   @IsNotEmpty({ message: 'O telefone não pode ser vazio' })
   phone!: string;
 
-  // Utilize o novo AddressDto como um objeto aninhado
-  @IsObject()
+  @IsObject({ message: 'O endereço deve ser um objeto válido.' })
   @ValidateNested()
   @Type(() => AddressDto)
   address!: AddressDto;
