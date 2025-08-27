@@ -1,27 +1,75 @@
-import { IsEmail, IsNotEmpty, IsString, IsDateString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsDateString,
+  IsObject,
+  ValidateNested,
+  IsNumber,
+  IsOptional,
+  Max,
+  Min,
+  IsEnum,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { VocationalYear } from 'src/enums/VocationalYearEnum.enum';
+
+// DTO de Endereço (se não estiver em um arquivo separado)
+export class AddressDto {
+  @IsString({ message: 'A rua deve ser uma string' })
+  @IsNotEmpty({ message: 'A rua não pode ser vazia' })
+  street!: string;
+
+  @IsString({ message: 'O bairro deve ser uma string' })
+  @IsNotEmpty({ message: 'O bairro não pode ser vazio' })
+  neighborhood!: string;
+
+  @IsString({ message: 'A cidade deve ser uma string' })
+  @IsNotEmpty({ message: 'A cidade não pode ser vazia' })
+  city!: string;
+
+  @IsString({ message: 'O estado deve ser uma string' })
+  @IsNotEmpty({ message: 'O estado não pode ser vazio' })
+  state!: string;
+}
 
 export class RegisterUserDto {
   @IsEmail({}, { message: 'E-mail inválido' })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'O e-mail não pode ser vazio' })
   email!: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'A senha não pode ser vazia' })
+  @IsString({ message: 'A senha deve ser uma string' })
   password!: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'O nome não pode ser vazio' })
+  @IsString({ message: 'O nome deve ser uma string' })
   name!: string;
 
-  @IsDateString()
+  @IsDateString(
+    {},
+    { message: 'A data de nascimento deve ser uma data válida' },
+  )
+  @IsNotEmpty({ message: 'A data de nascimento não pode ser vazia' })
   birthDate!: string;
 
-  @IsString()
+  @IsString({ message: 'O telefone deve ser uma string' })
+  @IsNotEmpty({ message: 'O telefone não pode ser vazio' })
   phone!: string;
 
-  @IsString()
-  address!: string;
+  // Utilize o novo AddressDto como um objeto aninhado
+  @IsObject()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  address!: AddressDto;
 
-  @IsString()
-  vocationalYear!: string;
+  @IsNotEmpty({ message: 'O ano vocacional não pode ser vazio' })
+  @IsEnum(VocationalYear, { message: 'Ano vocacional inválido' })
+  vocationalYear!: VocationalYear;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'O dia da contribuição deve ser um número.' })
+  @Min(1, { message: 'O dia deve ser no mínimo 1.' })
+  @Max(31, { message: 'O dia deve ser no máximo 31.' })
+  monthlyContributionDay?: number;
 }
