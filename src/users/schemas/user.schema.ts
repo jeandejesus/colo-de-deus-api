@@ -50,6 +50,9 @@ export class User {
   @Prop({ required: true, enum: VocationalYear })
   vocationalYear!: VocationalYear;
 
+  @Prop({ required: true })
+  trainer!: string;
+
   @Prop({
     type: Number,
     required: false, // Campo opcional

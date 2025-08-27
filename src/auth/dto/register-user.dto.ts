@@ -72,4 +72,8 @@ export class RegisterUserDto {
   @Min(1, { message: 'O dia deve ser no mínimo 1.' })
   @Max(31, { message: 'O dia deve ser no máximo 31.' })
   monthlyContributionDay?: number;
+
+  @IsNotEmpty({ message: 'O Formador não pode ser vazio' })
+  @IsString({ message: 'O Formador deve ser uma string' })
+  trainer!: string;
 }
