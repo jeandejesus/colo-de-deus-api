@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as webpush from 'web-push';
+import { ConfigService } from '@nestjs/config'; // Importe o ConfigService
 import {
   PushSubscription,
   PushSubscriptionDocument,
@@ -14,12 +15,12 @@ export class NotificationsService {
   constructor(
     @InjectModel(PushSubscription.name)
     private pushSubscriptionModel: Model<PushSubscriptionDocument>,
+    private configService: ConfigService,
   ) {
-    // Configure as chaves VAPID aqui
     webpush.setVapidDetails(
-      'mailto:seu-email@exemplo.com',
-      'BODD-W0-GH3GOhbgqjNhPBSLQW6q5YohLi3Wq7dTCgyevsp5uQwri8SW9p0vt0ccL2WNpzimJ3oGX6JnrRWqoUM',
-      'f4ept7-DMVYQGGHywFSFVEF9goZamaWfHXUTncryPTU',
+      'mailto:comunicacaocwb41@gmail.com',
+      this.configService.get<string>('VAPID_PUBLIC_KEY'),
+      this.configService.get<string>('VAPID_PRIVATE_KEY'),
     );
   }
 

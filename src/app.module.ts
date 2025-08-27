@@ -9,10 +9,14 @@ import { IncomesModule } from './incomes/incomes.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { BalanceModule } from './balance/balance.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/colo-de-deus-db'),
+    ConfigModule.forRoot({
+      isGlobal: true, // <-- deixa disponível em toda a aplicação
+    }),
+    MongooseModule.forRoot(process.env.DATABASE_URL as string),
     UsersModule,
     AuthModule,
     NotificationsModule,

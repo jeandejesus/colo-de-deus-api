@@ -1,7 +1,9 @@
+// src/notifications/notifications.module.ts
 import { Module } from '@nestjs/common';
-import { NotificationsController } from './notifications.controller';
-import { NotificationsService } from './notifications.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import { NotificationsService } from './notifications.service';
+import { NotificationsController } from './notifications.controller';
 import {
   PushSubscription,
   PushSubscriptionSchema,
@@ -9,6 +11,7 @@ import {
 
 @Module({
   imports: [
+    ConfigModule, // <-- isso resolve o erro do ConfigService
     MongooseModule.forFeature([
       { name: PushSubscription.name, schema: PushSubscriptionSchema },
     ]),

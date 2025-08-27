@@ -13,7 +13,7 @@ import { JwtStrategy } from './jwt/jwt.strategy'; // Importe a nossa estratégia
     UsersModule,
     PassportModule, // Adicione o PassportModule
     JwtModule.register({
-      secret: 'SEGREDO_SUPER_SECRETO',
+      secret: process.env.JWT_SECRET as string,
       signOptions: { expiresIn: '1h' },
     }),
   ],
