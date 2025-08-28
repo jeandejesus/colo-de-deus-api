@@ -1,6 +1,6 @@
 // src/schemas/user.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { VocationalYear } from 'src/enums/VocationalYearEnum.enum';
 
 export enum UserRole {
@@ -32,6 +32,8 @@ export type UserDocument = User & Document;
 // 3. Modifique o schema do usuário para usar o subdocumento
 @Schema()
 export class User {
+  _id!: mongoose.Schema.Types.ObjectId;
+
   @Prop({ required: true, unique: true })
   email!: string;
 
