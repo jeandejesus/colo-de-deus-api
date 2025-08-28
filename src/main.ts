@@ -15,6 +15,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.enableCors();
 
   // Registre o filtro de exceção globalmente
   app.useGlobalFilters(new AllExceptionsFilter());

@@ -8,15 +8,18 @@ import {
   Param,
   Patch,
   Delete,
+  SetMetadata,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UserRole } from 'src/users/schemas/user.schema';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);

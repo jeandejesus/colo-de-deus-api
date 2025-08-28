@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch, SetMetadata } from '@nestjs/common';
 import { BalanceService } from './balance.service';
+import { UserRole } from 'src/users/schemas/user.schema';
 
 @Controller('balance')
 export class BalanceController {
@@ -11,6 +12,7 @@ export class BalanceController {
   }
 
   @Patch()
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   update(@Body() body: { value: number }) {
     return this.balanceService.setBalance(body.value);
   }

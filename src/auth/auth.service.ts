@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+// src/auth/auth.service.ts
+
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -14,7 +17,7 @@ export class AuthService {
   ) {}
 
   async register(registerUserDto: RegisterUserDto) {
-    const user = await this.usersService.create(registerUserDto); // agora é UserDocument
+    const user = await this.usersService.create(registerUserDto);
     const { password, ...result } = user.toObject();
     return result;
   }
@@ -34,11 +37,25 @@ export class AuthService {
       loginUserDto.password,
     );
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('E-mail ou senha inválidos.');
     }
-    const payload = { email: user.email, sub: user._id };
+
+    // ➡️ 1. Inclua o 'role' no payload do token
+    const payload = {
+      email: user.email,
+      sub: user._id,
+      role: user.role, // Adicione o papel aqui
+    };
+
     return {
       access_token: this.jwtService.sign(payload),
+      // ➡️ 2. Opcional: Retorne o papel e o nome do usuário na resposta para o front-end
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
     };
   }
 }

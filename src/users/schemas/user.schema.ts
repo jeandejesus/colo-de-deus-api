@@ -3,7 +3,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { VocationalYear } from 'src/enums/VocationalYearEnum.enum';
 
-// 1. Crie a classe e o schema do subdocumento de Endereço
+export enum UserRole {
+  ADMIN = 'admin',
+  FINANCEIRO = 'financeiro',
+  MEMBRO = 'membro',
+}
+
 @Schema()
 export class Address {
   @Prop({ required: true })
@@ -60,6 +65,14 @@ export class User {
     max: [31, 'O dia deve ser no máximo 31'],
   })
   monthlyContributionDay?: number;
+
+  @Prop({
+    type: String,
+    enum: UserRole,
+    default: UserRole.MEMBRO,
+    required: true,
+  })
+  role?: UserRole;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

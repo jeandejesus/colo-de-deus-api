@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Document } from 'mongoose';
-import { User, UserDocument } from './schemas/user.schema';
+import { User, UserDocument, UserRole } from './schemas/user.schema';
 import { RegisterUserDto } from 'src/auth/dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -28,5 +28,18 @@ export class UsersService {
 
   async findOneById(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id).exec();
+  }
+
+  findAll() {
+    return this.userModel.find().exec();
+  }
+
+  async updateRole(id: string, newRole: UserRole) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+    user.role = newRole;
+    return user.save();
   }
 }
