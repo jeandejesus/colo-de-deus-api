@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BirthdayService } from './scheduling/birthday/birthday.service';
 import { SchedulingModule } from './scheduling/scheduling.module';
+import { MonthlyPaymentService } from './scheduling/monthly-payment/monthly-payment.service';
 
 @Module({
   imports: [
@@ -31,6 +32,6 @@ import { SchedulingModule } from './scheduling/scheduling.module';
     SchedulingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BirthdayService],
+  providers: [AppService, BirthdayService, MonthlyPaymentService],
 })
 export class AppModule {}
