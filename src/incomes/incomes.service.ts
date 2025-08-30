@@ -11,7 +11,7 @@ import { UpdateIncomeDto } from './dto/update-income.dto';
 export class IncomesService {
   constructor(
     @InjectModel(Income.name) private incomeModel: Model<Income>,
-    private balanceService: BalanceService, // ⬅️ Injete o BalanceService
+    private balanceService: BalanceService,
   ) {}
 
   async create(createIncomeDto: CreateIncomeDto): Promise<Income> {
@@ -34,7 +34,11 @@ export class IncomesService {
         filter.date.$lte = new Date(endDate);
       }
     }
-    return this.incomeModel.find(filter).populate('category').exec();
+    return this.incomeModel
+      .find(filter)
+      .populate('category')
+      .sort({ date: -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<Income> {
