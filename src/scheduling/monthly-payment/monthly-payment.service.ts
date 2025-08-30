@@ -4,13 +4,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class MonthlyPaymentService {
-  // ➡️ O nome do serviço foi alterado
   private readonly logger = new Logger(MonthlyPaymentService.name);
 
   constructor(
@@ -18,11 +17,7 @@ export class MonthlyPaymentService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  // ... (Sua função handleBirthdayCron continua aqui)
-
-  // ✅ Nova função para a notificação de contribuição mensal
-  // O cron job será executado todo dia, ao meio-dia
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
   async handleMonthlyContributionCron() {
     this.logger.log('Executando cron job de contribuição mensal...');
 

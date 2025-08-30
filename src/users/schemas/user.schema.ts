@@ -29,6 +29,17 @@ export const AddressSchema = SchemaFactory.createForClass(Address);
 // 2. Defina o tipo do documento de usuário
 export type UserDocument = User & Document;
 
+@Schema()
+class Payment {
+  @Prop({ required: true })
+  amount!: number;
+
+  @Prop({ required: true })
+  date!: Date;
+}
+
+const PaymentSchema = SchemaFactory.createForClass(Payment);
+
 // 3. Modifique o schema do usuário para usar o subdocumento
 @Schema()
 export class User {
@@ -75,6 +86,15 @@ export class User {
     required: true,
   })
   role?: UserRole;
+
+  @Prop({ type: [PaymentSchema], default: [] })
+  payments!: Payment[];
+
+  @Prop({ type: String, default: null })
+  resetPasswordToken?: string;
+
+  @Prop({ type: Date, default: null })
+  resetPasswordExpires?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

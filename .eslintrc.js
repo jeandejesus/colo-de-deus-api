@@ -1,9 +1,8 @@
-// .eslintrc.js
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.json', // 🔥 necessário para type-aware linting
+    project: '../tsconfig.json', // necessário para type-aware linting
     tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
@@ -15,14 +14,27 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   rules: {
-    // 🔧 Ajuste ou desligue regras que atrapalham decorators do class-validator
+    // 🚫 Desliga regras de "unsafe" do @typescript-eslint
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
-    '@typescript-eslint/no-unsafe-assignment': 'off',
-    '@typescript-eslint/no-unsafe-call': 'off',
-    '@typescript-eslint/no-unsafe-member-access': 'off',
-    // Prettier
+
+    // ✅ Prettier integrado
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
+  overrides: [
+    {
+      files: ['*.js'],
+      rules: {},
+      parser: 'espree', // parser nativo JS em vez do @typescript-eslint
+    },
+    {
+      files: ['*.ts'],
+      rules: {
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+      },
+    },
+  ],
 };
