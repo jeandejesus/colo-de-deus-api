@@ -10,6 +10,7 @@ import { ExpensesModule } from './expenses/expenses.module';
 import { BalanceModule } from './balance/balance.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ConfigModule } from '@nestjs/config';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     ExpensesModule,
     BalanceModule,
     CategoriesModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
