@@ -48,4 +48,19 @@ export class CategoriesService {
     }
     return { message: `Category with ID "${id}" has been removed.` };
   }
+
+  getMonthlyPaymentCategoryId(): Promise<string> {
+    return this.categoryModel
+      .findOne({ name: 'Contribuição Mensal' })
+      .exec()
+      .then((category) => {
+        if (category) {
+          return category._id.toString();
+        } else {
+          throw new NotFoundException(
+            'Categoria de Pagamento Mensal não encontrada',
+          );
+        }
+      });
+  }
 }

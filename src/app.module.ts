@@ -10,9 +10,15 @@ import { ExpensesModule } from './expenses/expenses.module';
 import { BalanceModule } from './balance/balance.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BirthdayService } from './scheduling/birthday/birthday.service';
+import { SchedulingModule } from './scheduling/scheduling.module';
+import { MonthlyPaymentService } from './scheduling/monthly-payment/monthly-payment.service';
+import { EmailService } from './email/email.service';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true, // <-- deixa disponível em toda a aplicação
     }),
@@ -24,8 +30,9 @@ import { ConfigModule } from '@nestjs/config';
     ExpensesModule,
     BalanceModule,
     CategoriesModule,
+    SchedulingModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, BirthdayService, MonthlyPaymentService, EmailService],
 })
 export class AppModule {}

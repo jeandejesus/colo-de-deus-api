@@ -1,6 +1,6 @@
 // src/schemas/user.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { VocationalYear } from 'src/enums/VocationalYearEnum.enum';
 
 export enum UserRole {
@@ -29,9 +29,22 @@ export const AddressSchema = SchemaFactory.createForClass(Address);
 // 2. Defina o tipo do documento de usuário
 export type UserDocument = User & Document;
 
+@Schema()
+class Payment {
+  @Prop({ required: true })
+  amount!: number;
+
+  @Prop({ required: true })
+  date!: Date;
+}
+
+const PaymentSchema = SchemaFactory.createForClass(Payment);
+
 // 3. Modifique o schema do usuário para usar o subdocumento
 @Schema()
 export class User {
+  _id!: mongoose.Schema.Types.ObjectId;
+
   @Prop({ required: true, unique: true })
   email!: string;
 
@@ -73,6 +86,15 @@ export class User {
     required: true,
   })
   role?: UserRole;
+
+  @Prop({ type: [PaymentSchema], default: [] })
+  payments!: Payment[];
+
+  @Prop({ type: String, default: null })
+  resetPasswordToken?: string;
+
+  @Prop({ type: Date, default: null })
+  resetPasswordExpires?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -13,5 +13,6 @@ import { BalanceModule } from 'src/balance/balance.module';
   ],
   controllers: [IncomesController],
   providers: [IncomesService],
+  exports: [IncomesService],
 })
 export class IncomesModule {}
