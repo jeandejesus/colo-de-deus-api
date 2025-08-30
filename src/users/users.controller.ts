@@ -60,7 +60,8 @@ export class UsersController {
   @Public() // ✅ This decorator now works
   async requestPasswordReset(@Body('email') email: string) {
     const token = await this.usersService.generatePasswordResetToken(email);
-    const resetUrl = `http://localhost:4200/reset-password?token=${token}`;
+    const frontendUrl = process.env.FRONTEND_URL as string;
+    const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
 
     await this.emailService.sendPasswordResetEmail(email, resetUrl);
 

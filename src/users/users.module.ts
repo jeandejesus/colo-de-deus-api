@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,7 +14,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     IncomesModule,
     CategoriesModule,
-    EmailModule,
+    forwardRef(() => EmailModule),
   ],
   controllers: [UsersController],
   providers: [UsersService, CategoriesService, AuthGuard],
