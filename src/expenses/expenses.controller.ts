@@ -8,42 +8,46 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
-  Request,
-  HttpCode,
+  Query,
+  SetMetadata,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ExpensesService } from './expenses.service';
+import { CreateExpensesDto } from './dto/create-expenses.dto';
+import { UpdateExpensesDto } from './dto/update-expenses.dto';
+import { UserRole } from 'src/users/schemas/user.schema';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('expenses')
 export class ExpensesController {
   constructor(private readonly expensesService: ExpensesService) {}
 
   @Post()
-  @HttpCode(201)
-  create(@Body() body: any, @Request() req) {
-    return this.expensesService.create(req.user._id, body);
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
+  create(@Body() createExpenseDto: CreateExpensesDto) {
+    return this.expensesService.create(createExpenseDto);
   }
 
   @Get()
-  findAll(@Request() req) {
-    return this.expensesService.findAll(req.user._id);
+  findAll(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.expensesService.findAll(startDate, endDate);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Request() req) {
-    return this.expensesService.findOne(id, req.user._id);
+  findOne(@Param('id') id: string) {
+    return this.expensesService.findOne(id);
   }
 
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any, @Request() req) {
-    return this.expensesService.update(id, req.user._id, body);
+  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpensesDto) {
+    return this.expensesService.update(id, updateExpenseDto);
   }
 
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   @Delete(':id')
-  @HttpCode(204)
-  remove(@Param('id') id: string, @Request() req) {
-    return this.expensesService.remove(id, req.user._id);
+  remove(@Param('id') id: string) {
+    return this.expensesService.remove(id);
   }
 }

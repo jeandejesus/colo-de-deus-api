@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // src/notifications/notifications.service.ts
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import * as webpush from 'web-push';
+import { ConfigService } from '@nestjs/config'; // Importe o ConfigService
 import {
   PushSubscription,
   PushSubscriptionDocument,
@@ -11,23 +15,62 @@ import {
 
 @Injectable()
 export class NotificationsService {
+  subscriptionModel: any;
   constructor(
     @InjectModel(PushSubscription.name)
     private pushSubscriptionModel: Model<PushSubscriptionDocument>,
+    private configService: ConfigService,
   ) {
-    // Configure as chaves VAPID aqui
     webpush.setVapidDetails(
-      'mailto:seu-email@exemplo.com',
-      'BODD-W0-GH3GOhbgqjNhPBSLQW6q5YohLi3Wq7dTCgyevsp5uQwri8SW9p0vt0ccL2WNpzimJ3oGX6JnrRWqoUM',
-      'f4ept7-DMVYQGGHywFSFVEF9goZamaWfHXUTncryPTU',
+      'mailto:comunicacaocwb41@gmail.com',
+      this.configService.get<string>('VAPID_PUBLIC_KEY'),
+      this.configService.get<string>('VAPID_PRIVATE_KEY'),
     );
   }
 
   async subscribe(userId: string, subscription: object): Promise<void> {
-    const newSubscription = new this.pushSubscriptionModel({
-      userId,
-      subscription,
+    const subscriptionRecord = await this.pushSubscriptionModel.findOne({
+      userId: new Types.ObjectId(userId),
     });
-    await newSubscription.save();
+    if (!subscriptionRecord) {
+      const newSubscription = new this.pushSubscriptionModel({
+        userId,
+        subscription,
+      });
+      await newSubscription.save();
+    }
+  }
+
+  async sendToUser(userId: string, title: string, body: string, data: any) {
+    const subscriptionRecord = await this.pushSubscriptionModel.findOne({
+      userId: new Types.ObjectId(userId),
+    });
+
+    if (!subscriptionRecord) {
+      throw new InternalServerErrorException(
+        'User has no active subscription.',
+      );
+    }
+
+    const payload = JSON.stringify({ title, body, data });
+
+    try {
+      await webpush.sendNotification(subscriptionRecord.subscription, payload);
+    } catch (error: unknown) {
+      console.error('Falha ao enviar notificação:', error);
+
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'statusCode' in error &&
+        (error as { statusCode: number }).statusCode === 410
+      ) {
+        await this.pushSubscriptionModel.deleteOne({
+          userId: new Types.ObjectId(userId),
+        });
+      }
+
+      throw new InternalServerErrorException('Falha ao enviar notificação.');
+    }
   }
 }
