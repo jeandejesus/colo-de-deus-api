@@ -17,7 +17,7 @@ export class BirthdayService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleBirthdayCron() {
     this.logger.log('Executando cron job de aniversário...');
 
