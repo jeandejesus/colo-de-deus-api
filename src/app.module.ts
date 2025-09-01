@@ -35,6 +35,6 @@ import { EmailService } from './email/email.service';
     SchedulingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BirthdayService, MonthlyPaymentService, EmailService],
+  providers: [AppService, EmailService],
 })
 export class AppModule {}
