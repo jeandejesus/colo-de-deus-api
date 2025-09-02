@@ -17,7 +17,7 @@ export class MonthlyPaymentService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES, {
+  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
     timeZone: 'America/Sao_Paulo', // fuso horário
   })
   async handleMonthlyContributionCron() {
