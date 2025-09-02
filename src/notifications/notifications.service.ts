@@ -73,4 +73,18 @@ export class NotificationsService {
       throw new InternalServerErrorException('Falha ao enviar notificação.');
     }
   }
+
+  async unsubscribe(userId: string): Promise<void> {
+    await this.pushSubscriptionModel.deleteOne({
+      userId: new Types.ObjectId(userId),
+    });
+  }
+
+  async getNotificationStatus(userId: string): Promise<any> {
+    const subscriptionStatus = await this.pushSubscriptionModel.findOne({
+      userId: new Types.ObjectId(userId),
+    });
+
+    return subscriptionStatus ? { subscribed: true } : { subscribed: false };
+  }
 }

@@ -1,6 +1,13 @@
 // src/notifications/notifications.controller.ts
 
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { NotificationsService } from './notifications.service';
 // import { Role } from '../auth/schemas/user.schema';
@@ -18,6 +25,13 @@ export class NotificationsController {
     return { success: true };
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post('unsubscribe')
+  async unsubscribe(@Request() req) {
+    await this.notificationsService.unsubscribe(req.user._id);
+    return { success: true };
+  }
+
   //@UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('send')
   async send(
@@ -30,5 +44,11 @@ export class NotificationsController {
       body.data,
     );
     return { success: true, message: 'Notification sent successfully.' };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('get-status-notification')
+  async getNotificationStatus(@Request() req) {
+    return await this.notificationsService.getNotificationStatus(req.user._id);
   }
 }
