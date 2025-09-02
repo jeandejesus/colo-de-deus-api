@@ -47,7 +47,7 @@ export class RelusLifeService {
     this.logger.log('Cron job de hora da misericórdia finalizado.');
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_8AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleLectioCron() {
