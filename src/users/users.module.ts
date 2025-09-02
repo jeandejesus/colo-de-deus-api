@@ -7,7 +7,6 @@ import { IncomesModule } from 'src/incomes/incomes.module';
 import { CategoriesService } from 'src/categories/categories.service';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { EmailModule } from 'src/email/email.module';
-import { AuthGuard } from 'src/auth/auth.guard';
 
 @Module({
   imports: [
