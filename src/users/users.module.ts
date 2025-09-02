@@ -17,7 +17,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
     forwardRef(() => EmailModule),
   ],
   controllers: [UsersController],
-  providers: [UsersService, CategoriesService, AuthGuard],
+  providers: [UsersService, CategoriesService],
   exports: [UsersService, MongooseModule],
 })
 export class UsersModule {}

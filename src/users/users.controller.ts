@@ -9,18 +9,20 @@ import {
   UseGuards,
   SetMetadata,
   Post,
+  Request,
 } from '@nestjs/common';
-// ✅ REMOVE: import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { UserRole } from './schemas/user.schema';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { EmailService } from 'src/email/email.service';
 import { Public } from 'src/common/decorators/public.decorator';
-import { AuthGuard } from 'src/auth/auth.guard';
+// import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
-@UseGuards(AuthGuard, RolesGuard) // ✅ Use your custom guard
+@UseGuards(AuthGuard('jwt'), RolesGuard) // ✅ Use your custom guard
 @SetMetadata('roles', [UserRole.ADMIN])
 export class UsersController {
   constructor(
@@ -81,5 +83,16 @@ export class UsersController {
     return {
       message: 'Senha redefinida com sucesso.',
     };
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
+
+  @Patch('me')
+  updateUser(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    console.log(req.user._id);
+    return this.usersService.updateUser(req.user._id, updateUserDto);
   }
 }

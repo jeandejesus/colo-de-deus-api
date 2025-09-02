@@ -15,6 +15,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -143,5 +144,60 @@ export class UsersService {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
+  }
+
+  async findOne(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException(`Usuário com ID "${id}" não encontrado.`);
+    }
+    return user;
+  }
+
+  async updateUser(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    const updatePayload: any = { ...updateUserDto };
+
+    // This block correctly handles the password
+    if (updateUserDto.password) {
+      const salt = await bcrypt.genSalt(10);
+      updatePayload.password = await bcrypt.hash(updateUserDto.password, salt);
+    } else {
+      // If the password is not provided, remove it from the payload
+      delete updatePayload.password;
+    }
+
+    // Handle the nested address fields
+    if (updateUserDto.address) {
+      if (updateUserDto.address.street) {
+        updatePayload['address.street'] = updateUserDto.address.street;
+      }
+      if (updateUserDto.address.neighborhood) {
+        updatePayload['address.neighborhood'] =
+          updateUserDto.address.neighborhood;
+      }
+      if (updateUserDto.address.city) {
+        updatePayload['address.city'] = updateUserDto.address.city;
+      }
+      if (updateUserDto.address.state) {
+        updatePayload['address.state'] = updateUserDto.address.state;
+      }
+      delete updatePayload.address;
+    }
+
+    // ✅ Use the prepared updatePayload instead of updateUserDto
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(userId, updatePayload, {
+        new: true,
+        runValidators: true,
+      })
+      .exec();
+
+    if (!updatedUser) {
+      throw new NotFoundException(`Usuário com ID "${userId}" não encontrado.`);
+    }
+    return updatedUser;
   }
 }
