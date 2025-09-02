@@ -17,7 +17,9 @@ export class BirthdayService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES, {
+    timeZone: 'America/Sao_Paulo', // fuso horário
+  })
   async handleBirthdayCron() {
     this.logger.log('Executando cron job de aniversário...');
 
