@@ -21,7 +21,7 @@ import { RolesGuard } from './guards/roles.guard';
       imports: [ConfigModule], // Importe o ConfigModule aqui
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'), // Use o serviço para obter a chave
-        signOptions: { expiresIn: '1h' },
+        signOptions: { expiresIn: '7d' },
       }),
       inject: [ConfigService], // Injete o serviço para que a fábrica possa usá-lo
     }),
