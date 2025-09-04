@@ -56,7 +56,7 @@ export class NotificationsService {
 
     try {
       await webpush.sendNotification(subscriptionRecord.subscription, payload);
-      this.logger.log('notificações enviada');
+      console.error('notificações enviada');
     } catch (error: unknown) {
       console.error('Falha ao enviar notificação:', error);
 
