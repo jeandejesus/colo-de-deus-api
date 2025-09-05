@@ -147,7 +147,14 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.userModel.findById(id).exec();
+    const user = await this.userModel
+      .findById(id)
+      .select({
+        password: 0,
+        resetPasswordExpires: 0,
+        resetPasswordToken: 0,
+      })
+      .exec();
     if (!user) {
       throw new NotFoundException(`Usuário com ID "${id}" não encontrado.`);
     }
