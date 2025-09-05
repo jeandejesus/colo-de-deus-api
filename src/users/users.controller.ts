@@ -23,7 +23,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // ✅ Use your custom guard
-@SetMetadata('roles', [UserRole.ADMIN])
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
@@ -31,6 +30,7 @@ export class UsersController {
   ) {}
 
   @Get()
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   findAll() {
     return this.usersService.findAll();
   }
@@ -43,8 +43,8 @@ export class UsersController {
     return this.usersService.updateRole(id, updateUserRoleDto.role);
   }
 
-  // ✅ NOVO: Endpoint para registrar um pagamento
   @Post('payment')
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   async addPayment(
     @Body('userId') userId: string,
     @Body('amount') amount: number,
@@ -54,6 +54,7 @@ export class UsersController {
   }
 
   @Get('payments-status')
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   async getUsersWithPaymentStatus() {
     return this.usersService.hasPaidThisMonth();
   }
