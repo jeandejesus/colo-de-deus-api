@@ -6,7 +6,7 @@ import { VocationalYear } from 'src/enums/VocationalYearEnum.enum';
 export enum UserRole {
   ADMIN = 'admin',
   FINANCEIRO = 'financeiro',
-  LIDERANCA = 'liderança',
+  LIDERANCA = 'lideranca',
   MEMBRO = 'membro',
 }
 
