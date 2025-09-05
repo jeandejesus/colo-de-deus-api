@@ -25,7 +25,7 @@ export class RelusLifeService {
       this.logger.log('Nenhum usuário encontrado.');
       return;
     }
-
+    const urlToOpen = 'http://instagram.com/colodedeus';
     await Promise.all(
       usersToNotify.map((user) =>
         this.notificationsService
@@ -33,7 +33,7 @@ export class RelusLifeService {
             user._id.toString(),
             'Hora do Terço da Misericórdia 🙏',
             `Olá, ${user.name}! Está na hora de rezar o Terço da Misericórdia. Vamos juntos!`,
-            { type: 'terco-da-misericordia' },
+            { type: 'terco-da-misericordia', url: urlToOpen },
           )
           .catch((error) =>
             this.logger.error(
@@ -59,6 +59,8 @@ export class RelusLifeService {
       return;
     }
 
+    const urlToOpen = 'http://liturgia.cancaonova.com/pb/';
+
     await Promise.all(
       usersToNotify.map((user) =>
         this.notificationsService
@@ -66,7 +68,7 @@ export class RelusLifeService {
             user._id.toString(),
             'Já fez a lectio hoje ?🙏',
             `Olá, ${user.name}! bora de fazer a léctio?, Vamos juntos!`,
-            { type: 'lectio' },
+            { type: 'lectio', url: urlToOpen },
           )
           .catch((error) =>
             this.logger.error(
