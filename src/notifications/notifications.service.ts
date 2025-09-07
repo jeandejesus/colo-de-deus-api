@@ -29,12 +29,10 @@ export class NotificationsService {
   }
 
   async subscribe(userId: string, subscription: object): Promise<void> {
-    const newSubscription = new this.pushSubscriptionModel({
-      userId,
+    await new this.pushSubscriptionModel({
+      userId: new Types.ObjectId(userId),
       subscription,
-    });
-
-    await newSubscription.save();
+    }).save();
   }
 
   async sendToUser(userId: string, title: string, body: string, data: any) {
