@@ -7,6 +7,8 @@ import {
   UseGuards,
   Request,
   Get,
+  Query,
+  Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { NotificationsService } from './notifications.service';
@@ -27,8 +29,9 @@ export class NotificationsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('unsubscribe')
-  async unsubscribe(@Request() req) {
-    await this.notificationsService.unsubscribe(req.user._id);
+  async unsubscribe(@Body() body: any, @Request() req) {
+    console.log(body);
+    await this.notificationsService.unsubscribe(body.subscription.endpoint);
     return { success: true };
   }
 
@@ -47,8 +50,14 @@ export class NotificationsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('get-status-notification')
-  async getNotificationStatus(@Request() req) {
-    return await this.notificationsService.getNotificationStatus(req.user._id);
+  @Get('get-status-notification/:endpoint')
+  async getNotificationStatus(
+    @Request() req,
+    @Param('endpoint') endpoint: string,
+  ) {
+    return await this.notificationsService.getNotificationStatus(
+      req.user._id,
+      endpoint,
+    );
   }
 }

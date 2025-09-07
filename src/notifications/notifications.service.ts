@@ -71,15 +71,16 @@ export class NotificationsService {
     }
   }
 
-  async unsubscribe(userId: string): Promise<void> {
+  async unsubscribe(endpoint: string): Promise<void> {
     await this.pushSubscriptionModel.deleteOne({
-      userId: new Types.ObjectId(userId),
+      'subscription.endpoint': endpoint,
     });
   }
 
-  async getNotificationStatus(userId: string): Promise<any> {
+  async getNotificationStatus(userId: string, endpoint: string): Promise<any> {
     const subscriptionStatus = await this.pushSubscriptionModel.findOne({
       userId: new Types.ObjectId(userId),
+      'subscription.endpoint': endpoint,
     });
 
     return subscriptionStatus ? { subscribed: true } : { subscribed: false };
