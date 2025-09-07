@@ -38,7 +38,7 @@ export class NotificationsService {
   }
 
   async sendToUser(userId: string, title: string, body: string, data: any) {
-    const subscriptionRecord = await this.pushSubscriptionModel.findOne({
+    const subscriptionRecord = await this.pushSubscriptionModel.find({
       userId: new Types.ObjectId(userId),
     });
 
@@ -51,8 +51,10 @@ export class NotificationsService {
     const payload = JSON.stringify({ title, body, data });
 
     try {
-      await webpush.sendNotification(subscriptionRecord.subscription, payload);
-      console.error('notificações enviada');
+      for (const element of subscriptionRecord) {
+        await webpush.sendNotification(element.subscription, payload);
+        console.error('notificações enviada');
+      }
     } catch (error: unknown) {
       console.error('Falha ao enviar notificação:', error);
 
