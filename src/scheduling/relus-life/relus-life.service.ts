@@ -32,7 +32,7 @@ export class RelusLifeService {
           .sendToUser(
             user._id.toString(),
             'Hora do Terço da Misericórdia 🙏',
-            `Olá, ${user.name}! Está na hora de rezar o Terço da Misericórdia. Vamos juntos!`,
+            `Olá, ${user.name}! Está na hora de rezar o Terço da Misericórdia, ja pega seu terço e Vamos juntos!`,
             { type: 'terco-da-misericordia', url: urlToOpen },
           )
           .catch((error) =>
