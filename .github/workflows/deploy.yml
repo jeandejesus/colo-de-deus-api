@@ -19,7 +19,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd /var/www/api
+          cd /var/www/colodedeuscwb/api/colo-de-deus-api
           git pull origin main
           npm install
           npm run build
