@@ -1,22 +1,23 @@
-# Etapa 1: build
-FROM node:20.12.0 AS build
+# Etapa 1 - Build
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --only=production
 
 COPY . .
 RUN npm run build
 
-# Etapa 2: execução
-FROM node:20.12.0-alpine
+# Etapa 2 - Runtime
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
-COPY package*.json ./
+COPY --from=builder /app/package*.json ./
+RUN npm install --only=production
+
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
