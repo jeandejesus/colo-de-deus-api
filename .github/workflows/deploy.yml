@@ -36,3 +36,14 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/colo-de-deus-api:latest
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/colo-de-deus-api:latest
           cache-to: type=inline
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/apps/docker-compose
+            docker-compose pull
+            docker-compose up -d
