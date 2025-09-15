@@ -26,6 +26,10 @@ export class NotificationsService {
       this.configService.get<string>('VAPID_PUBLIC_KEY'),
       this.configService.get<string>('VAPID_PRIVATE_KEY'),
     );
+
+    const env =
+      this.configService.get<string>('VAPID_PUBLIC_KEY') ?? 'undefined';
+    console.log('VAPID_PUBLIC_KEY:', env);
   }
 
   async subscribe(userId: string, subscription: object): Promise<void> {
