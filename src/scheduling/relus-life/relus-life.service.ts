@@ -81,4 +81,37 @@ export class RelusLifeService {
 
     this.logger.log('Cron job de Lectio finalizado.');
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_6PM, {
+    timeZone: 'America/Sao_Paulo',
+  })
+  async handleMaryHourCron() {
+    this.logger.log('Executando cron job terço mariano...');
+
+    const usersToNotify = await this.userModel.find().exec();
+    if (usersToNotify.length === 0) {
+      this.logger.log('Nenhum usuário encontrado.');
+      return;
+    }
+    const urlToOpen = 'http://instagram.com/colodedeus';
+    await Promise.all(
+      usersToNotify.map((user) =>
+        this.notificationsService
+          .sendToUser(
+            user._id.toString(),
+            'Terço Mariano🙏',
+            `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!`,
+            { type: 'terco-mariano', url: urlToOpen },
+          )
+          .catch((error) =>
+            this.logger.error(
+              `Falha ao enviar notificação para ${user.name}:`,
+              error,
+            ),
+          ),
+      ),
+    );
+
+    this.logger.log('Cron job de hora do terço mariano finalizado.');
+  }
 }
