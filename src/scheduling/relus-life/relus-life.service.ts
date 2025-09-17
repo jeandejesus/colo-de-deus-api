@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
+import { MonitoredCron } from 'src/common/decorators/monitored-cron.decorator';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 
@@ -14,7 +15,7 @@ export class RelusLifeService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_3PM, {
+  @MonitoredCron(CronExpression.EVERY_DAY_AT_3PM, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleMercyHourCron() {
@@ -47,7 +48,7 @@ export class RelusLifeService {
     this.logger.log('Cron job de hora da misericórdia finalizado.');
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_8AM, {
+  @MonitoredCron(CronExpression.EVERY_30_SECONDS, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleLectioCron() {
@@ -61,28 +62,10 @@ export class RelusLifeService {
 
     const urlToOpen = 'http://liturgia.cancaonova.com/pb/';
 
-    await Promise.all(
-      usersToNotify.map((user) =>
-        this.notificationsService
-          .sendToUser(
-            user._id.toString(),
-            'Já fez a lectio hoje ?🙏',
-            `Olá, ${user.name}! bora de fazer a léctio?, Vamos juntos!`,
-            { type: 'lectio', url: urlToOpen },
-          )
-          .catch((error) =>
-            this.logger.error(
-              `Falha ao enviar notificação para ${user.name}:`,
-              error,
-            ),
-          ),
-      ),
-    );
-
-    this.logger.log('Cron job de Lectio finalizado.');
+    return;
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_6PM, {
+  @MonitoredCron(CronExpression.EVERY_DAY_AT_6PM, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleMaryHourCron() {
