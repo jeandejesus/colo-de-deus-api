@@ -34,7 +34,7 @@ export class RelusLifeService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_SECONDS, {
+  @Cron(CronExpression.EVERY_DAY_AT_3PM, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleMercyHourCron() {
