@@ -58,6 +58,14 @@ export class RelusLifeService {
               `Olá, ${user.name}! Está na hora de rezar o Terço da Misericórdia, ja pega seu terço e Vamos juntos!`,
               { type: 'terco-da-misericordia', url: urlToOpen },
             )
+            .then(() => {
+              // ✅ Conta cada envio bem-sucedido
+              cronSuccessCounter.inc({ job: jobName });
+              cronLastExecution.set(
+                { job: jobName },
+                Math.floor(Date.now() / 1000),
+              );
+            })
             .catch((error) =>
               this.logger.error(
                 `Falha ao enviar notificação para ${user.name}:`,
@@ -68,10 +76,6 @@ export class RelusLifeService {
       );
 
       this.logger.log('Cron job de hora da misericórdia finalizado.');
-
-      // 🔹 Atualiza métricas
-      cronSuccessCounter.inc({ job: jobName });
-      cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
     } catch (error) {
       cronFailureCounter.inc({ job: jobName });
       throw error;
@@ -83,9 +87,9 @@ export class RelusLifeService {
   })
   async handleLectioCron() {
     const jobName = 'handleLectioCron';
-    try {
-      this.logger.log('Executando cron job de hora da lectio...');
+    this.logger.log('Executando cron job de hora da lectio...');
 
+    try {
       const usersToNotify = await this.userModel.find().exec();
       if (usersToNotify.length === 0) {
         this.logger.log('Nenhum usuário encontrado.');
@@ -93,6 +97,7 @@ export class RelusLifeService {
       }
 
       const urlToOpen = 'http://liturgia.cancaonova.com/pb/';
+
       await Promise.all(
         usersToNotify.map((user) =>
           this.notificationsService
@@ -102,21 +107,28 @@ export class RelusLifeService {
               `Olá, ${user.name}! bora de fazer a léctio?, Vamos juntos!`,
               { type: 'lectio', url: urlToOpen },
             )
-            .catch((error) =>
+            .then(() => {
+              // ✅ Conta cada envio bem-sucedido
+              cronSuccessCounter.inc({ job: jobName });
+              cronLastExecution.set(
+                { job: jobName },
+                Math.floor(Date.now() / 1000),
+              );
+            })
+            .catch((error) => {
+              // ❌ Conta cada falha de envio
+              cronFailureCounter.inc({ job: jobName });
               this.logger.error(
                 `Falha ao enviar notificação para ${user.name}:`,
                 error,
-              ),
-            ),
+              );
+            }),
         ),
       );
 
       this.logger.log('Cron job de Lectio finalizado.');
-
-      // 🔹 Atualiza métricas
-      cronSuccessCounter.inc({ job: jobName });
-      cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
     } catch (error) {
+      // Caso o cron inteiro falhe antes de tentar enviar
       cronFailureCounter.inc({ job: jobName });
       throw error;
     }
@@ -146,6 +158,14 @@ export class RelusLifeService {
               `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!`,
               { type: 'terco-mariano', url: urlToOpen },
             )
+            .then(() => {
+              // ✅ Conta cada envio bem-sucedido
+              cronSuccessCounter.inc({ job: jobName });
+              cronLastExecution.set(
+                { job: jobName },
+                Math.floor(Date.now() / 1000),
+              );
+            })
             .catch((error) => {
               cronFailureCounter.inc({ job: jobName });
 
@@ -158,10 +178,6 @@ export class RelusLifeService {
       );
 
       this.logger.log('Cron job de hora do terço mariano finalizado.');
-
-      // 🔹 Atualiza métricas
-      cronSuccessCounter.inc({ job: jobName });
-      cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
     } catch (error) {
       cronFailureCounter.inc({ job: jobName });
       throw error;
