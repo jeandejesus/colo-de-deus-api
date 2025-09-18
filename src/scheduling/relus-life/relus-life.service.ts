@@ -163,6 +163,7 @@ export class RelusLifeService {
       cronSuccessCounter.inc({ job: jobName });
       cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
     } catch (error) {
+      cronFailureCounter.inc({ job: jobName });
       throw error;
     }
   }
