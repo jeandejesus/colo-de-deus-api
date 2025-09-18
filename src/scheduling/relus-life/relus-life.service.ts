@@ -146,12 +146,14 @@ export class RelusLifeService {
               `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!`,
               { type: 'terco-mariano', url: urlToOpen },
             )
-            .catch((error) =>
+            .catch((error) => {
+              cronFailureCounter.inc({ job: jobName });
+
               this.logger.error(
                 `Falha ao enviar notificação para ${user.name}:`,
                 error,
-              ),
-            ),
+              );
+            }),
         ),
       );
 
@@ -161,7 +163,6 @@ export class RelusLifeService {
       cronSuccessCounter.inc({ job: jobName });
       cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
     } catch (error) {
-      cronFailureCounter.inc({ job: jobName });
       throw error;
     }
   }
