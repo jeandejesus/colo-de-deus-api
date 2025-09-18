@@ -141,7 +141,7 @@ export class RelusLifeService {
         usersToNotify.map((user) =>
           this.notificationsService
             .sendToUser(
-              user._id.toString(),
+              'force error',
               'Terço Mariano🙏',
               `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!`,
               { type: 'terco-mariano', url: urlToOpen },
