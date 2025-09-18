@@ -134,7 +134,7 @@ export class RelusLifeService {
     }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_6PM, {
+  @Cron(CronExpression.EVERY_DAY_AT_7PM, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleMaryHourCron() {
@@ -153,7 +153,7 @@ export class RelusLifeService {
         usersToNotify.map((user) =>
           this.notificationsService
             .sendToUser(
-              'force error',
+               user._id.toString(),
               'Terço Mariano🙏',
               `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!`,
               { type: 'terco-mariano', url: urlToOpen },
