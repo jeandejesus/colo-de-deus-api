@@ -134,7 +134,7 @@ export class RelusLifeService {
     }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_7PM, {
+  @Cron(CronExpression.EVERY_DAY_AT_6PM, {
     timeZone: 'America/Sao_Paulo',
   })
   async handleMaryHourCron() {
