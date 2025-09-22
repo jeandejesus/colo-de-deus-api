@@ -20,6 +20,7 @@ import { LoggingModule } from './logging/logging.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { MetricsMiddleware } from './metrics/metrics.middleware';
 import { LoggerModule } from 'nestjs-pino';
+import { CalendarModule } from './google-calendar/google-calendar.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { LoggerModule } from 'nestjs-pino';
     MetricsModule,
     LoggerModule.forRoot(), // necessário para criar o provider Logger
     LoggingModule,
+    CalendarModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],
