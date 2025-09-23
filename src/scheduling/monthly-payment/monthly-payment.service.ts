@@ -61,7 +61,7 @@ export class MonthlyPaymentService {
         userId: user._id.toString(),
         title: 'Lembrete de Contribuição Mensal 💰',
         body: `Olá, ${user.name}! Não se esqueça de sua contribuição mensal.`,
-        data: { type: 'monthly-contribution-reminder' },
+        data: { type: 'monthly-contribution-reminder',url: 'http://colodedeuscwb.com.br/pix' },
       };
 
       try {
