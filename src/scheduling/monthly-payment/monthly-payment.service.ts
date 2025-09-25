@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { NotificationsService } from 'src/notifications/notifications.service';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class MonthlyPaymentService {
@@ -23,15 +24,28 @@ export class MonthlyPaymentService {
   async handleMonthlyContributionCron() {
     this.logger.log('Executando cron job de contribuição mensal...');
 
-    const today = new Date();
-    const currentDay = today.getDate();
+    const today = dayjs();
+    const currentDay = today.date();
 
-    // Encontre todos os usuários cujo monthlyContributionDay é hoje
+    const startOfMonth = today.startOf('month').toDate();
+    const endOfMonth = today.endOf('month').toDate();
+
     const usersToNotify = await this.userModel
       .find({
-        monthlyContributionDay: currentDay,
+        monthlyContributionDay: { $lt: currentDay }, // já passou do dia de contribuição
+        $nor: [
+          {
+            payments: {
+              $elemMatch: {
+                date: { $gte: startOfMonth, $lte: endOfMonth }, // já pagou no mês atual
+              },
+            },
+          },
+        ],
       })
       .exec();
+
+    console.log(usersToNotify);
 
     if (usersToNotify.length === 0) {
       this.logger.log('Nenhuma contribuição agendada para hoje.');
@@ -47,7 +61,7 @@ export class MonthlyPaymentService {
         userId: user._id.toString(),
         title: 'Lembrete de Contribuição Mensal 💰',
         body: `Olá, ${user.name}! Não se esqueça de sua contribuição mensal.`,
-        data: { type: 'monthly-contribution-reminder' },
+        data: { type: 'monthly-contribution-reminder',url: 'http://colodedeuscwb.com.br/pix' },
       };
 
       try {
