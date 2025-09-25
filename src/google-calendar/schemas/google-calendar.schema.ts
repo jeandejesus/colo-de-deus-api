@@ -9,7 +9,7 @@ export class GoogleCalendar {
   googleEventId!: string;
 
   @Prop({ required: [true, 'O status é obrigatório.'] })
-  status!: string;
+  statusMongo!: string;
 
   @Prop({ required: [true, 'O tipo de missão é obrigatório.'] })
   typeMission!: string;

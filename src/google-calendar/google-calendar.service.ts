@@ -39,21 +39,21 @@ export class CalendarService {
     return `${iso}${sign}${hours}:${minutes}`;
   }
 
-  async getEventsThisMonth() {
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
+  async getEventsByMonth(month: number, year: number) {
+    // month: 1-12 vindo do front (ex: Janeiro = 1)
+    const startOfMonth = new Date(year, month - 1, 1, 0, 0, 0, 0);
+    const endOfMonth = new Date(year, month, 1, 0, 0, 0, 0); // primeiro dia do próximo mês
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const endOfMonth = new Date(startOfMonth);
-    endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+    // timeMin = maior entre hoje e o início do mês
+    const timeMin = startOfMonth < today ? today : startOfMonth;
 
     // Pega eventos do Google
     const res = await this.calendar.events.list({
       calendarId: this.calendarId.trim(),
-      timeMin: today.toISOString(),
+      timeMin: timeMin.toISOString(),
       timeMax: endOfMonth.toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
@@ -61,15 +61,16 @@ export class CalendarService {
 
     const googleEvents = res.data.items || [];
 
-    // Pega eventos do MongoDB
+    // Pega eventos do MongoDB (se quiser, já pode filtrar por data também)
     const dbEvents = await this.googleCalendarModel.find().exec();
 
     // Mescla os dois
     const mergedEvents = googleEvents.map((gEvent) => {
       const dbEvent = dbEvents.find((d) => d.googleEventId === gEvent.id);
+
       return {
         ...gEvent,
-        status: dbEvent?.status ?? 'pendente', // valor padrão
+        statusMongo: dbEvent?.statusMongo ?? 'pendente',
         typeMission: dbEvent?.typeMission ?? '',
       };
     });
@@ -99,7 +100,7 @@ export class CalendarService {
 
     const eventToSave = {
       googleEventId: googleEvent.id,
-      status: eventData.status,
+      statusMongo: eventData.status,
       typeMission: eventData.typeMission,
     };
 
@@ -129,7 +130,7 @@ export class CalendarService {
       { googleEventId: eventId },
       {
         $set: {
-          status: eventData.status,
+          statusMongo: eventData.status,
           typeMission: eventData.typeMission,
         },
       },

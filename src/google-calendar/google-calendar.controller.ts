@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CalendarService } from './google-calendar.service';
 
@@ -15,9 +16,18 @@ export class CalendarController {
 
   // GET /calendar/events?calendarId=ID_DA_AGENDA
   @Get('events')
-  async getEvents() {
-    const events = await this.calendarService.getEventsThisMonth();
-    return events;
+  async getEventsByMonth(
+    @Query('month') month: string,
+    @Query('year') year: string,
+  ) {
+    const parsedMonth = parseInt(month, 10);
+    const parsedYear = parseInt(year, 10);
+
+    if (isNaN(parsedMonth) || isNaN(parsedYear)) {
+      throw new Error('Month e Year devem ser números');
+    }
+
+    return this.calendarService.getEventsByMonth(parsedMonth, parsedYear);
   }
 
   @Post('create')
