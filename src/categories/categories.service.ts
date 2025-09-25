@@ -20,6 +20,10 @@ export class CategoriesService {
     return this.categoryModel.find().exec();
   }
 
+  async findAllByType(type: string): Promise<Category[]> {
+    return this.categoryModel.find({ type }).exec();
+  }
+
   async findOne(id: string): Promise<Category> {
     const category = await this.categoryModel.findById(id).exec();
     if (!category) {
