@@ -8,6 +8,7 @@ export enum UserRole {
   FINANCEIRO = 'financeiro',
   LIDERANCA = 'lideranca',
   MEMBRO = 'membro',
+  AGENDA = 'agenda',
 }
 
 @Schema()
