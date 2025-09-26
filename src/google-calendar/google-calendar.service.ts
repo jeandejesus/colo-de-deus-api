@@ -84,6 +84,7 @@ export class CalendarService {
       requestBody: {
         summary: eventData.summary,
         description: eventData.description,
+        location: eventData.location,
         start: {
           dateTime: this.formatDateTime(eventData.start),
           timeZone: 'America/Sao_Paulo',
@@ -92,7 +93,7 @@ export class CalendarService {
           dateTime: this.formatDateTime(eventData.end),
           timeZone: 'America/Sao_Paulo',
         },
-        colorId: '2',
+        colorId: '4',
       },
     });
 
@@ -114,6 +115,7 @@ export class CalendarService {
       requestBody: {
         summary: eventData.summary,
         description: eventData.description,
+        location: eventData.location,
         start: {
           dateTime: this.formatDateTime(eventData.start),
           timeZone: 'America/Sao_Paulo',
@@ -122,7 +124,7 @@ export class CalendarService {
           dateTime: this.formatDateTime(eventData.end),
           timeZone: 'America/Sao_Paulo',
         },
-        colorId: '2',
+        colorId: '4',
       },
     });
 
