@@ -52,16 +52,20 @@ export class CalendarService {
 
   async getEventsByMonth(month: number, year: number) {
     // month: 1-12 vindo do front (ex: Janeiro = 1)
-    const startOfMonth = new Date(year, month - 1, 1, 0, 0, 0, 0);
-    const endOfMonth = new Date(year, month, 1, 0, 0, 0, 0); // primeiro dia do próximo mês
+    const startOfMonth = new Date(year, month - 1, 1);
+    startOfMonth.setUTCHours(0, 0, 0, 0); // força início do mês em UTC
+
+    const endOfMonth = new Date(year, month, 1);
+    endOfMonth.setUTCHours(0, 0, 0, 0); // primeiro dia do próximo mês em UTC
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setUTCHours(0, 0, 0, 0); // garante "meia-noite UTC"
 
     // timeMin = maior entre hoje e o início do mês
     const timeMin = startOfMonth < today ? today : startOfMonth;
+    console.log('timeMin:', timeMin.toISOString());
 
-    // 📌 Ajuste: para o Google, passamos sempre ISO completo (UTC)
+    // 📌 Agora timeMin e timeMax não vão "voltar um dia" no UTC
     const res = await this.calendar.events.list({
       calendarId: this.calendarId.trim(),
       timeMin: timeMin.toISOString(),
@@ -70,16 +74,25 @@ export class CalendarService {
       orderBy: 'startTime',
     });
 
-    const googleEvents = res.data.items || [];
+    const googleEvents = (res.data.items || []).filter((event) => {
+      // Se for all-day, o start.date é o que vale
+      if (event.start?.date && !event.start.dateTime) {
+        return event.start.date >= timeMin.toISOString().split('T')[0];
+      }
+      // Se for com horário
+      if (event.start?.dateTime) {
+        return new Date(event.start.dateTime) >= timeMin;
+      }
+      return true;
+    });
 
-    // 📌 Corrigir datas all-day (Google envia como "YYYY-MM-DD")
+    // Corrigir datas all-day (Google envia como "YYYY-MM-DD")
     const normalizeEventDates = (event: any) => {
       if (event.start?.date && !event.start.dateTime) {
-        // All-day → manter string simples, sem conversão para UTC
-        event.start.date = event.start.date; // ex: "2025-09-28"
+        event.start.date = event.start.date; // já vem certo
       }
       if (event.end?.date && !event.end.dateTime) {
-        event.end.date = event.end.date; // ex: "2025-09-29"
+        event.end.date = event.end.date;
       }
       return event;
     };
