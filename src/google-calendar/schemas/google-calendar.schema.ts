@@ -13,6 +13,9 @@ export class GoogleCalendar {
 
   @Prop({ required: [true, 'O tipo de missão é obrigatório.'] })
   typeMission!: string;
+
+  @Prop({ required: [true, 'O nome da missão é obrigatório.'] })
+  summary?: string;
 }
 
 export type GoogleCalendarDocument = GoogleCalendar & Document;

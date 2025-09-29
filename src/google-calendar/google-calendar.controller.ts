@@ -32,8 +32,7 @@ export class CalendarController {
 
   @Post('create')
   async createEvent(@Body() body: any) {
-    // exemplo: body: { calendarId: 'primary', summary: 'Reunião', start: '2025-09-23T15:00:00-03:00', end: '2025-09-23T16:00:00-03:00' }
-    const { calendarId, ...eventData } = body;
+    const { ...eventData } = body;
 
     const event = await this.calendarService.createEvent(eventData);
 
@@ -47,7 +46,6 @@ export class CalendarController {
   @Put('update/:eventId')
   async updateEvent(@Param('eventId') eventId: string, @Body() body: any) {
     const event = await this.calendarService.updateEvent(eventId, body);
-
     // aqui você pode atualizar no banco também (ex: status: confirmed, summary atualizado, etc)
     return {
       message: 'Evento atualizado com sucesso',

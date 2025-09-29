@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 @Injectable()
 export class CalendarService {
   private calendar;
-  calendarId = 'jean.atletico2010@gmail.com';
+  calendarId = process.env.CALENDAR_ID || '';
 
   constructor(
     @InjectModel(GoogleCalendar.name)
@@ -31,12 +31,23 @@ export class CalendarService {
   // Converte string para ISO completo com fuso horário
   private formatDateTime(dateStr: string): string {
     const date = new Date(dateStr);
-    const tzOffset = -date.getTimezoneOffset(); // minutos
-    const sign = tzOffset >= 0 ? '+' : '-';
-    const hours = String(Math.floor(Math.abs(tzOffset) / 60)).padStart(2, '0');
-    const minutes = String(Math.abs(tzOffset) % 60).padStart(2, '0');
-    const iso = date.toISOString().split('.')[0]; // remove milissegundos
-    return `${iso}${sign}${hours}:${minutes}`;
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds() ?? 0);
+
+    // offset em minutos: getTimezoneOffset retorna (UTC - local) em minutos
+    const offsetMinutes = -date.getTimezoneOffset(); // exemplo: -180 para UTC-3
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+    const absOffset = Math.abs(offsetMinutes);
+    const offsetHours = pad(Math.floor(absOffset / 60));
+    const offsetMins = pad(absOffset % 60);
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMins}`;
   }
 
   async getEventsByMonth(month: number, year: number) {
@@ -93,7 +104,7 @@ export class CalendarService {
           dateTime: this.formatDateTime(eventData.end),
           timeZone: 'America/Sao_Paulo',
         },
-        colorId: '4',
+        colorId: '5',
       },
     });
 
@@ -103,6 +114,7 @@ export class CalendarService {
       googleEventId: googleEvent.id,
       statusMongo: eventData.status,
       typeMission: eventData.typeMission,
+      summary: eventData.summary,
     };
 
     return new this.googleCalendarModel(eventToSave).save();
@@ -124,7 +136,7 @@ export class CalendarService {
           dateTime: this.formatDateTime(eventData.end),
           timeZone: 'America/Sao_Paulo',
         },
-        colorId: '4',
+        colorId: '5',
       },
     });
 
@@ -134,6 +146,7 @@ export class CalendarService {
         $set: {
           statusMongo: eventData.status,
           typeMission: eventData.typeMission,
+          summary: eventData.summary,
         },
       },
       { upsert: true },
@@ -143,6 +156,7 @@ export class CalendarService {
       googleEventId: res.data.id,
       status: eventData.status,
       typeMission: eventData.typeMission,
+      summary: eventData.summary,
     };
   }
 
