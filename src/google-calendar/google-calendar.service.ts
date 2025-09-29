@@ -61,7 +61,7 @@ export class CalendarService {
     // timeMin = maior entre hoje e o início do mês
     const timeMin = startOfMonth < today ? today : startOfMonth;
 
-    // Pega eventos do Google
+    // 📌 Ajuste: para o Google, passamos sempre ISO completo (UTC)
     const res = await this.calendar.events.list({
       calendarId: this.calendarId.trim(),
       timeMin: timeMin.toISOString(),
@@ -72,11 +72,25 @@ export class CalendarService {
 
     const googleEvents = res.data.items || [];
 
-    // Pega eventos do MongoDB (se quiser, já pode filtrar por data também)
+    // 📌 Corrigir datas all-day (Google envia como "YYYY-MM-DD")
+    const normalizeEventDates = (event: any) => {
+      if (event.start?.date && !event.start.dateTime) {
+        // All-day → manter string simples, sem conversão para UTC
+        event.start.date = event.start.date; // ex: "2025-09-28"
+      }
+      if (event.end?.date && !event.end.dateTime) {
+        event.end.date = event.end.date; // ex: "2025-09-29"
+      }
+      return event;
+    };
+
+    // Pega eventos do MongoDB
     const dbEvents = await this.googleCalendarModel.find().exec();
 
     // Mescla os dois
     const mergedEvents = googleEvents.map((gEvent) => {
+      gEvent = normalizeEventDates(gEvent);
+
       const dbEvent = dbEvents.find((d) => d.googleEventId === gEvent.id);
 
       return {
@@ -176,5 +190,11 @@ export class CalendarService {
     } catch (err) {
       throw new Error('Erro ao deletar evento');
     }
+  }
+
+  fixAllDayDate(dateStr: string): string {
+    const d = new Date(dateStr);
+    d.setHours(d.getHours() - 3); // ajusta para horário de Brasília
+    return d.toISOString();
   }
 }
