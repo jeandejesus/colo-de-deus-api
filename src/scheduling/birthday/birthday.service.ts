@@ -100,11 +100,13 @@ export class BirthdayService {
         .map((a) => a.name)
         .join(', ');
 
+      const url = `https://wa.me/55${user.phone}?text=${encodeURIComponent(`Parabéns, ${user.name}! Deus te abençoe!`)}`;
+
       const payload = {
         userId: user._id.toString(),
         title: `Aniversário Hoje! 🎉`,
-        body: `É aniversário de ${aniversariantesNames} hoje!`,
-        data: { type: 'birthday-alert' },
+        body: `É aniversário de ${aniversariantesNames} hoje! Vamos enviar salmos e felicitações!`,
+        data: { type: 'birthday-alert', url },
       };
 
       try {
