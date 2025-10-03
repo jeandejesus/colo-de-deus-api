@@ -58,33 +58,18 @@ export class CalendarService {
     const endOfMonth = new Date(year, month, 1);
     endOfMonth.setUTCHours(0, 0, 0, 0); // primeiro dia do próximo mês em UTC
 
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0); // garante "meia-noite UTC"
-
-    // timeMin = maior entre hoje e o início do mês
-    const timeMin = startOfMonth < today ? today : startOfMonth;
-    console.log('timeMin:', timeMin.toISOString());
-
     // 📌 Agora timeMin e timeMax não vão "voltar um dia" no UTC
     const res = await this.calendar.events.list({
       calendarId: this.calendarId.trim(),
-      timeMin: timeMin.toISOString(),
+      timeMin: startOfMonth.toISOString(),
       timeMax: endOfMonth.toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
     });
 
-    const googleEvents = (res.data.items || []).filter((event) => {
-      // Se for all-day, o start.date é o que vale
-      if (event.start?.date && !event.start.dateTime) {
-        return event.start.date >= timeMin.toISOString().split('T')[0];
-      }
-      // Se for com horário
-      if (event.start?.dateTime) {
-        return new Date(event.start.dateTime) >= timeMin;
-      }
-      return true;
-    });
+    console.log('Eventos Google recebidos:', res.data.items);
+
+    const googleEvents = res.data.items || [];
 
     // Corrigir datas all-day (Google envia como "YYYY-MM-DD")
     const normalizeEventDates = (event: any) => {
