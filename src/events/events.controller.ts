@@ -62,6 +62,11 @@ export class EventsController {
     return this.eventsService.checkin(eventId, qrCode);
   }
 
+  @Get(':eventId/participants')
+  async getEventParticipants(@Param('eventId') eventId: string) {
+    return this.eventsService.getParticipants(eventId);
+  }
+
   @Get(':eventId/registration/:userId')
   getUserEventQRCode(
     @Param('eventId') eventId: string,
