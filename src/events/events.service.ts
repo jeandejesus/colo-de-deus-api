@@ -16,6 +16,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { EventsGateway } from './events.gateway';
+import { use } from 'passport';
 
 @Injectable()
 export class EventsService {
@@ -72,8 +73,6 @@ export class EventsService {
 
     const qrCode = uuidv4();
 
-    console.log('Gerando QR Code:', qrCode);
-
     // Cria documento na collection registration
     const registration = new this.registrationModel({
       event: eventId,
@@ -85,7 +84,12 @@ export class EventsService {
     await registration.save();
 
     // Opcional: ainda manter no participants do evento
-    event.participants.push({ user: userId, qrCode });
+    const user = await this.userModel
+      .findOne({ _id: userId })
+      .select('name')
+      .exec();
+
+    event.participants.push({ user: userId, qrCode, userName: user?.name });
     await event.save();
 
     return { msg: 'Inscrição realizada com sucesso', qrCode };
@@ -139,9 +143,10 @@ export class EventsService {
     if (!event) throw new NotFoundException('Evento não encontrado');
 
     return event.participants.map((p) => ({
-      user: (p.user as any)?.name || 'Usuário não encontrado',
+      userName: (p.user as any)?.name || 'Usuário não encontrado',
       qrCode: p.qrCode,
       checkedIn: p.checkedIn,
+      userId: (p.user as any)?._id,
     }));
   }
 

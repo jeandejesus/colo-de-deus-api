@@ -1,11 +1,13 @@
 // src/events/schemas/event.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { use } from 'passport';
 
 export type ParticipantType = {
   user: Types.ObjectId;
   checkedIn: boolean;
   qrCode: string;
+  userName?: string;
 };
 
 export type EventDocument = Event & Document;
@@ -36,6 +38,7 @@ export class Event {
         user: { type: Types.ObjectId, ref: 'User' },
         checkedIn: Boolean,
         qrCode: String,
+        userName: String,
       },
     ],
   })
