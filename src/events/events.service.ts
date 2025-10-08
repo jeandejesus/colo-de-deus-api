@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateEventDto } from './dto/create-event.dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto/update-event.dto';
 import { EventDocument } from './schemas/event.schema/event.schema';
@@ -14,13 +13,19 @@ import {
   Registration,
   RegistrationDocument,
 } from './schemas/event.schema/registration.schema';
+import { v4 as uuidv4 } from 'uuid';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { EventsGateway } from './events.gateway';
+import { use } from 'passport';
 
 @Injectable()
 export class EventsService {
   constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(Registration.name)
     private readonly registrationModel: Model<RegistrationDocument>, // <-- aqui o erro
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async create(createEventDto: CreateEventDto): Promise<any> {
@@ -68,8 +73,6 @@ export class EventsService {
 
     const qrCode = uuidv4();
 
-    console.log('Gerando QR Code:', qrCode);
-
     // Cria documento na collection registration
     const registration = new this.registrationModel({
       event: eventId,
@@ -81,7 +84,12 @@ export class EventsService {
     await registration.save();
 
     // Opcional: ainda manter no participants do evento
-    event.participants.push({ user: userId, qrCode });
+    const user = await this.userModel
+      .findOne({ _id: userId })
+      .select('name')
+      .exec();
+
+    event.participants.push({ user: userId, qrCode, userName: user?.name });
     await event.save();
 
     return { msg: 'Inscrição realizada com sucesso', qrCode };
@@ -103,6 +111,8 @@ export class EventsService {
     participant.checkedIn = true;
     await event.save();
 
+    this.eventsGateway.emitParticipantsUpdate(eventId, event.participants);
+
     return { msg: 'Check-in realizado com sucesso' };
   }
 
@@ -119,6 +129,25 @@ export class EventsService {
       qrCode: registration.qrCode,
       eventTitle: populatedEvent.title,
     };
+  }
+
+  async getParticipants(eventId: string) {
+    const event = await this.eventModel
+      .findById(eventId)
+      .populate({
+        path: 'participants.user',
+        select: 'name',
+      })
+      .exec();
+
+    if (!event) throw new NotFoundException('Evento não encontrado');
+
+    return event.participants.map((p) => ({
+      userName: (p.user as any)?.name || 'Usuário não encontrado',
+      qrCode: p.qrCode,
+      checkedIn: p.checkedIn,
+      userId: (p.user as any)?._id,
+    }));
   }
 
   async getUserRegistrations(userId: string) {

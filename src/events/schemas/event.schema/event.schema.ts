@@ -1,6 +1,14 @@
 // src/events/schemas/event.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { use } from 'passport';
+
+export type ParticipantType = {
+  user: Types.ObjectId;
+  checkedIn: boolean;
+  qrCode: string;
+  userName?: string;
+};
 
 export type EventDocument = Event & Document;
 
@@ -24,14 +32,17 @@ export class Event {
   @Prop()
   maxParticipants!: number;
 
-  @Prop([
-    {
-      user: { type: String, required: true }, // depois pode ser ObjectId do User
-      checkedIn: { type: Boolean, default: false },
-      qrCode: { type: String, required: true },
-    },
-  ])
-  participants!: any[];
+  @Prop({
+    type: [
+      {
+        user: { type: Types.ObjectId, ref: 'User' },
+        checkedIn: Boolean,
+        qrCode: String,
+        userName: String,
+      },
+    ],
+  })
+  participants!: ParticipantType[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

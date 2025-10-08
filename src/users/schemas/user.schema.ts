@@ -9,6 +9,8 @@ export enum UserRole {
   LIDERANCA = 'lideranca',
   MEMBRO = 'membro',
   AGENDA = 'agenda',
+  EVENTOS = 'eventos',
+  CHECKIN = 'checkin',
 }
 
 @Schema()
