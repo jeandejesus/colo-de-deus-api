@@ -31,23 +31,15 @@ export class CalendarService {
   // Converte string para ISO completo com fuso horário
   private formatDateTime(dateStr: string): string {
     const date = new Date(dateStr);
+    const tzOffset = -date.getTimezoneOffset();
+    const diffHours = Math.floor(tzOffset / 60);
+    const diffMinutes = Math.abs(tzOffset % 60);
+    const sign = tzOffset >= 0 ? '+' : '-';
+
     const pad = (n: number) => String(n).padStart(2, '0');
+    const offset = `${sign}${pad(Math.abs(diffHours))}:${pad(diffMinutes)}`;
 
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1);
-    const day = pad(date.getDate());
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    const seconds = pad(date.getSeconds() ?? 0);
-
-    // offset em minutos: getTimezoneOffset retorna (UTC - local) em minutos
-    const offsetMinutes = -date.getTimezoneOffset(); // exemplo: -180 para UTC-3
-    const sign = offsetMinutes >= 0 ? '+' : '-';
-    const absOffset = Math.abs(offsetMinutes);
-    const offsetHours = pad(Math.floor(absOffset / 60));
-    const offsetMins = pad(absOffset % 60);
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMins}`;
+    return date.toISOString().replace('Z', offset);
   }
 
   async getEventsByMonth(month: number, year: number) {
@@ -66,8 +58,6 @@ export class CalendarService {
       singleEvents: true,
       orderBy: 'startTime',
     });
-
-    console.log('Eventos Google recebidos:', res.data.items);
 
     const googleEvents = res.data.items || [];
 
