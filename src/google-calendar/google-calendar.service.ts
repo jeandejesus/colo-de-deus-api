@@ -163,7 +163,6 @@ export class CalendarService {
   }
 
   async deleteEvent(eventId: string) {
-    console.log('Deletando evento com ID:', eventId);
     try {
       await this.calendar.events.delete({
         calendarId: this.calendarId,
