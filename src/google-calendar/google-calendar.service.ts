@@ -29,17 +29,19 @@ export class CalendarService {
   }
 
   // Converte string para ISO completo com fuso horário
-  private formatDateTime(dateStr: string): string {
+  private formatForGoogleCalendar(dateStr: string): string {
     const date = new Date(dateStr);
-    const tzOffset = -date.getTimezoneOffset();
-    const diffHours = Math.floor(tzOffset / 60);
-    const diffMinutes = Math.abs(tzOffset % 60);
-    const sign = tzOffset >= 0 ? '+' : '-';
-
     const pad = (n: number) => String(n).padStart(2, '0');
-    const offset = `${sign}${pad(Math.abs(diffHours))}:${pad(diffMinutes)}`;
 
-    return date.toISOString().replace('Z', offset);
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds() ?? 0);
+
+    // Apenas data e hora local, sem offset
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
 
   async getEventsByMonth(month: number, year: number) {
@@ -99,11 +101,11 @@ export class CalendarService {
         description: eventData.description,
         location: eventData.location,
         start: {
-          dateTime: this.formatDateTime(eventData.start),
+          dateTime: this.formatForGoogleCalendar(eventData.start),
           timeZone: 'America/Sao_Paulo',
         },
         end: {
-          dateTime: this.formatDateTime(eventData.end),
+          dateTime: this.formatForGoogleCalendar(eventData.end),
           timeZone: 'America/Sao_Paulo',
         },
         colorId: '5',
@@ -124,7 +126,10 @@ export class CalendarService {
 
   async updateEvent(eventId: string, eventData: any) {
     console.log('data do front', eventData.start);
-    console.log('data convertida', this.formatDateTime(eventData.start));
+    console.log(
+      'data convertida',
+      this.formatForGoogleCalendar(eventData.start),
+    );
 
     const res = await this.calendar.events.update({
       calendarId: this.calendarId,
@@ -134,11 +139,11 @@ export class CalendarService {
         description: eventData.description,
         location: eventData.location,
         start: {
-          dateTime: this.formatDateTime(eventData.start),
+          dateTime: this.formatForGoogleCalendar(eventData.start),
           timeZone: 'America/Sao_Paulo',
         },
         end: {
-          dateTime: this.formatDateTime(eventData.end),
+          dateTime: this.formatForGoogleCalendar(eventData.end),
           timeZone: 'America/Sao_Paulo',
         },
         colorId: '5',
