@@ -123,6 +123,9 @@ export class CalendarService {
   }
 
   async updateEvent(eventId: string, eventData: any) {
+    console.log('data do front', eventData.start);
+    console.log('data convertida', this.formatDateTime(eventData.start));
+
     const res = await this.calendar.events.update({
       calendarId: this.calendarId,
       eventId,
