@@ -148,14 +148,14 @@ export class RelusLifeService {
         return;
       }
 
-      const urlToOpen = 'http://instagram.com/colodedeus';
+      const urlToOpen = '';
       await Promise.all(
         usersToNotify.map((user) =>
           this.notificationsService
             .sendToUser(
-               user._id.toString(),
+              user._id.toString(),
               'Terço Mariano🙏',
-              `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!`,
+              `Olá, ${user.name} já rezou seu terço hoje, se não, já pega seu terço e Vamos juntos!🙏`,
               { type: 'terco-mariano', url: urlToOpen },
             )
             .then(() => {
@@ -178,6 +178,56 @@ export class RelusLifeService {
       );
 
       this.logger.log('Cron job de hora do terço mariano finalizado.');
+    } catch (error) {
+      cronFailureCounter.inc({ job: jobName });
+      throw error;
+    }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
+    timeZone: 'America/Sao_Paulo',
+  })
+  async handlePrayerInTonguesCron() {
+    const jobName = 'handlePrayerInTonguesCron';
+    try {
+      this.logger.log('Executando cron job oração em linguas...');
+
+      const usersToNotify = await this.userModel.find().exec();
+      if (usersToNotify.length === 0) {
+        this.logger.log('Nenhum usuário encontrado.');
+        return;
+      }
+
+      const urlToOpen = '';
+      await Promise.all(
+        usersToNotify.map((user) =>
+          this.notificationsService
+            .sendToUser(
+              user._id.toString(),
+              'Propósito de oração🙏',
+              `Olá, ${user.name}, não esqueça de orar 15 min em linguas para cumprir nosso propósito de oração, vamos junto!! 🙏`,
+              { type: 'oração', url: urlToOpen },
+            )
+            .then(() => {
+              // ✅ Conta cada envio bem-sucedido
+              cronSuccessCounter.inc({ job: jobName });
+              cronLastExecution.set(
+                { job: jobName },
+                Math.floor(Date.now() / 1000),
+              );
+            })
+            .catch((error) => {
+              cronFailureCounter.inc({ job: jobName });
+
+              this.logger.error(
+                `Falha ao enviar notificação para ${user.name}:`,
+                error,
+              );
+            }),
+        ),
+      );
+
+      this.logger.log('Cron job de oração em linguas finalizado.');
     } catch (error) {
       cronFailureCounter.inc({ job: jobName });
       throw error;
