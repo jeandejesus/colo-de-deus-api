@@ -19,7 +19,6 @@ export class NominatimService {
 
     // --- 1️⃣ Tentar Google Maps ---
     try {
-      console.log('Tentando Google Maps API...');
       if (!this.googleApiKey) {
         console.log('❌ Chave da API do Google não configurada.');
         throw new Error('Chave da API do Google não configurada.');
