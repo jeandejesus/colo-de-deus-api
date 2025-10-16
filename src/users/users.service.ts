@@ -250,7 +250,7 @@ export class UsersService {
         'address.location': { $exists: true },
         'address.location.coordinates': { $ne: [] },
       })
-      .select('name address.location address.city address.state')
+      .select('name address.street address.location address.city address.state')
       .exec();
   }
 
