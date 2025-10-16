@@ -12,9 +12,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ConfigModule } from '@nestjs/config';
 import { HealthModule } from './health/health.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { BirthdayService } from './scheduling/birthday/birthday.service';
 import { SchedulingModule } from './scheduling/scheduling.module';
-import { MonthlyPaymentService } from './scheduling/monthly-payment/monthly-payment.service';
 import { EmailService } from './email/email.service';
 import { LoggingModule } from './logging/logging.module';
 import { MetricsModule } from './metrics/metrics.module';
@@ -22,6 +20,9 @@ import { MetricsMiddleware } from './metrics/metrics.middleware';
 import { LoggerModule } from 'nestjs-pino';
 import { CalendarModule } from './google-calendar/google-calendar.module';
 import { EventsModule } from './events/events.module';
+import { NominatimService } from './services/nominatim/nominatim.service';
+import { GeoUpdateService } from './missionaries/geo-update/geo-update.service';
+import { GeoUpdateModule } from './missionaries/geo-update/geo-update.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { EventsModule } from './events/events.module';
     LoggingModule,
     CalendarModule,
     EventsModule,
+    GeoUpdateModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],

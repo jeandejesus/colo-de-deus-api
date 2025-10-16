@@ -16,12 +16,14 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { NominatimService } from 'src/services/nominatim/nominatim.service';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private incomeService: IncomesService,
     private categoriesService: CategoriesService, // ⬅️ Injetando CategoryService
+    private readonly nominatimService: NominatimService,
   ) {}
 
   async create(createUserDto: RegisterUserDto): Promise<UserDocument> {
@@ -206,5 +208,85 @@ export class UsersService {
       throw new NotFoundException(`Usuário com ID "${userId}" não encontrado.`);
     }
     return updatedUser;
+  }
+
+  // 🔹 Atualiza coordenadas do usuário
+  async updateCoordinates(
+    userId: string,
+    lat: number,
+    lon: number,
+  ): Promise<User> {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { 'address.location': { type: 'Point', coordinates: [lon, lat] } },
+        { new: true },
+      )
+      .exec();
+
+    if (!updatedUser) {
+      throw new NotFoundException(`Usuário com ID "${userId}" não encontrado.`);
+    }
+
+    return updatedUser;
+  }
+
+  // 🔹 Opcional: busca usuários sem coordenadas
+  // Mongoose
+  async findWithoutCoordinates(): Promise<User[]> {
+    return this.userModel
+      .find({
+        $or: [
+          { 'address.location': { $exists: false } },
+          { 'address.location': null },
+        ],
+      })
+      .exec();
+  }
+
+  async findAllWithLocation() {
+    return this.userModel
+      .find({
+        'address.location': { $exists: true },
+        'address.location.coordinates': { $ne: [] },
+      })
+      .select('name address.location address.city address.state')
+      .exec();
+  }
+
+  async findNearAddress(address: string) {
+    if (!address) {
+      throw new BadRequestException('Endereço é obrigatório.');
+    }
+
+    // 1️⃣ Obter coordenadas do endereço informado
+    const coords = await this.nominatimService.getCoordinates(address);
+    if (!coords) {
+      throw new BadRequestException('Endereço não encontrado.');
+    }
+
+    // 2️⃣ Buscar missionários próximos usando geoQuery
+    const radiusKm = 10; // raio em km
+    const radiusMeters = radiusKm * 1000;
+
+    const nearbyUsers = await this.userModel
+      .find({
+        'address.location': {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [coords.lon, coords.lat],
+            },
+            $maxDistance: radiusMeters,
+          },
+        },
+      })
+      .select('name address.location address.city address.state');
+
+    return {
+      origin: { lat: coords.lat, lon: coords.lon },
+      count: nearbyUsers.length,
+      users: nearbyUsers,
+    };
   }
 }
