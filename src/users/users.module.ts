@@ -7,6 +7,7 @@ import { IncomesModule } from 'src/incomes/incomes.module';
 import { CategoriesService } from 'src/categories/categories.service';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { EmailModule } from 'src/email/email.module';
+import { NominatimService } from 'src/services/nominatim/nominatim.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { EmailModule } from 'src/email/email.module';
     forwardRef(() => EmailModule),
   ],
   controllers: [UsersController],
-  providers: [UsersService, CategoriesService],
+  providers: [UsersService, CategoriesService, NominatimService],
   exports: [UsersService, MongooseModule],
 })
 export class UsersModule {}

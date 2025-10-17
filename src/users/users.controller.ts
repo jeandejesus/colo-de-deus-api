@@ -10,6 +10,7 @@ import {
   SetMetadata,
   Post,
   Request,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
@@ -33,6 +34,17 @@ export class UsersController {
   @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('with-location')
+  async findAllWithLocation() {
+    return this.usersService.findAllWithLocation();
+  }
+
+  @Get('location/near')
+  @SetMetadata('roles', [UserRole.ADMIN, UserRole.AGENDA])
+  async findNearAddress(@Request() req, @Query('address') address: string) {
+    return this.usersService.findNearAddress(address);
   }
 
   @Patch(':id/role')

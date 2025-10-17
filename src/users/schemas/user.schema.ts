@@ -26,6 +26,16 @@ export class Address {
 
   @Prop({ required: true })
   state!: string;
+
+  @Prop({
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], default: undefined, index: '2dsphere' },
+  })
+  location?: {
+    type: 'Point';
+
+    coordinates: [number, number]; // [longitude, latitude]
+  };
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);
