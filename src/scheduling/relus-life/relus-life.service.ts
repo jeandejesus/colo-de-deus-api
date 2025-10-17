@@ -184,7 +184,7 @@ export class RelusLifeService {
     }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
+  @Cron(CronExpression.EVERY_6_HOURS, {
     timeZone: 'America/Sao_Paulo',
   })
   async handlePrayerInTonguesCron() {
@@ -205,7 +205,7 @@ export class RelusLifeService {
             .sendToUser(
               user._id.toString(),
               'Propósito de oração🙏',
-              `Olá, ${user.name}, não esqueça de orar 15 min em linguas para cumprir nosso propósito de oração, vamos junto!! 🙏`,
+              `Olá, ${user.name}, não esqueça do propósito de oração em línguas, se não terminou aproveite agora 🙏`,
               { type: 'oração', url: urlToOpen },
             )
             .then(() => {
