@@ -95,35 +95,47 @@ export class BirthdayService {
     aniversariantes: UserDocument[],
     otherUsers: UserDocument[],
   ) {
-    for (const user of otherUsers) {
-      const aniversariantesNames = aniversariantes
-        .map((a) => a.name)
-        .join(', ');
+    for (const aniversariante of aniversariantes) {
+      const title = `Aniversário Hoje! 🎉`;
 
-      const url = `https://wa.me/55${user.phone}?text=${encodeURIComponent(`Parabéns, ${user.name}! Deus te abençoe!`)}`;
+      const name = aniversariante.name;
+      const phone = aniversariante.phone || '';
 
-      const payload = {
-        userId: user._id.toString(),
-        title: `Aniversário Hoje! 🎉`,
-        body: `É aniversário de ${aniversariantesNames} hoje! Vamos enviar salmos e felicitações!`,
-        data: { type: 'birthday-alert', url },
-      };
+      // Monta o link do WhatsApp
+      const url =
+        phone && phone.length >= 10
+          ? `https://wa.me/55${phone}?text=${encodeURIComponent(
+              `Parabéns, ${name}! Deus te abençoe!`,
+            )}`
+          : undefined;
 
-      try {
-        await this.notificationsService.sendToUser(
-          payload.userId,
-          payload.title,
-          payload.body,
-          payload.data,
-        );
-        this.logger.log(
-          `Notificação de aniversário enviada para ${user.name}.`,
-        );
-      } catch (error) {
-        this.logger.error(
-          `Falha ao enviar alerta de aniversário para ${user.name}:`,
-          error,
-        );
+      const body = `É aniversário de ${name} hoje! Vamos enviar salmos e felicitações!`;
+
+      for (const user of otherUsers) {
+        const payload = {
+          userId: user._id.toString(),
+          title,
+          body,
+          data: { type: 'birthday-alert', url },
+        };
+
+        try {
+          await this.notificationsService.sendToUser(
+            payload.userId,
+            payload.title,
+            payload.body,
+            payload.data,
+          );
+
+          this.logger.log(
+            `Notificação de aniversário de ${name} enviada para ${user.name}.`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `Falha ao enviar alerta de ${name} para ${user.name}:`,
+            error,
+          );
+        }
       }
     }
   }
