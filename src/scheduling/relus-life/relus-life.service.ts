@@ -90,7 +90,7 @@ export class RelusLifeService {
         return;
       }
 
-      const urlToOpen = 'http://liturgia.cancaonova.com/pb/';
+      const urlToOpen = 'http://colodedeuscwb.com.br/liturgia';
 
       await Promise.all(
         usersToNotify.map((user) =>
