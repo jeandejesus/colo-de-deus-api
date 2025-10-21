@@ -18,7 +18,7 @@ export class LiturgiaService {
   constructor(@InjectModel(Liturgia.name) private liturgiaModel: Model<LiturgiaDocument>) {}
 
   // Atualiza a liturgia do dia
-  @Cron(CronExpression.EVERY_MINUTE, {
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReadings(): Promise<LiturgiaDocument> {
@@ -62,7 +62,7 @@ export class LiturgiaService {
   }
 
   // Atualiza a reflexão diária
-  @Cron(CronExpression.EVERY_MINUTE, {
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReflection(): Promise<LiturgiaDocument> {
