@@ -2,9 +2,6 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
@@ -21,6 +18,43 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+# Colo de Deus — API
+
+Servidor backend construído com NestJS para a aplicação "Colo de Deus Curitiba". Fornece APIs REST, agendamento (cron jobs), notificações push, integração com Google Calendar e métricas Prometheus.
+
+## Principais funcionalidades
+
+- Autenticação e permissões
+- Gestão de usuários, receitas, despesas e balanço
+- Eventos com inscrições e check-in via QR code
+- Notificações push (webpush / VAPID)
+- Integração com Google Calendar
+- Jobs agendados com NestJS Schedule
+- Métricas Prometheus
+
+## Estrutura do repositório (resumo)
+
+- colo-de-deus-api/ — backend NestJS (este README)
+
+## Requisitos
+
+- Node.js >= 18
+- npm >= 8
+- MongoDB (ou URL MongoDB compatível)
+- Conta de serviço Google (opcional, para integração calendar)
+
+## Scripts úteis
+
+Instalar e rodar:
+
+```bash
+cd colo-de-deus-api
+npm install
+npm run start:dev    # modo desenvolvimento
+npm run start:prod   # produção (build + run)
+npm run test         # unit tests
+```
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -28,7 +62,7 @@
 ## Project setup
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Compile and run the project
@@ -64,8 +98,8 @@ When you're ready to deploy your NestJS application to production, there are som
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install -g @nestjs/mau
+mau deploy
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
@@ -96,3 +130,12 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+Referências rápidas:
+
+- [AppModule](http://_vscodecontentref_/0)
+- [HealthController](http://_vscodecontentref_/1)
+- [Registration](http://_vscodecontentref_/2)
+- [Dockerfile](http://_vscodecontentref_/3)
+- [Dockerfile](http://_vscodecontentref_/4)
+- [README.md](http://_vscodecontentref_/5)
