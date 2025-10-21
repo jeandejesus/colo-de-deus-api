@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CalendarService } from './google-calendar.service';
 
 @Controller('calendar')
@@ -16,10 +7,7 @@ export class CalendarController {
 
   // GET /calendar/events?calendarId=ID_DA_AGENDA
   @Get('events')
-  async getEventsByMonth(
-    @Query('month') month: string,
-    @Query('year') year: string,
-  ) {
+  async getEventsByMonth(@Query('month') month: string, @Query('year') year: string) {
     const parsedMonth = parseInt(month, 10);
     const parsedYear = parseInt(year, 10);
 

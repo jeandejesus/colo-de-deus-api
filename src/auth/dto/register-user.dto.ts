@@ -46,10 +46,7 @@ export class RegisterUserDto {
   @IsString({ message: 'O nome deve ser uma string' })
   name!: string;
 
-  @IsDateString(
-    {},
-    { message: 'A data de nascimento deve ser uma data válida' },
-  )
+  @IsDateString({}, { message: 'A data de nascimento deve ser uma data válida' })
   @IsNotEmpty({ message: 'A data de nascimento não pode ser vazia' })
   birthDate!: string;
 

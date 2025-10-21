@@ -13,5 +13,4 @@ export class PushSubscription {
 }
 
 export type PushSubscriptionDocument = PushSubscription & Document;
-export const PushSubscriptionSchema =
-  SchemaFactory.createForClass(PushSubscription);
+export const PushSubscriptionSchema = SchemaFactory.createForClass(PushSubscription);

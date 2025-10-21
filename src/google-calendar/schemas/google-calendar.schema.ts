@@ -19,5 +19,4 @@ export class GoogleCalendar {
 }
 
 export type GoogleCalendarDocument = GoogleCalendar & Document;
-export const GoogleCalendarSchema =
-  SchemaFactory.createForClass(GoogleCalendar);
+export const GoogleCalendarSchema = SchemaFactory.createForClass(GoogleCalendar);

@@ -1,18 +1,11 @@
 // src/events/events.service.ts
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateEventDto } from './dto/create-event.dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto/update-event.dto';
 import { EventDocument } from './schemas/event.schema/event.schema';
-import {
-  Registration,
-  RegistrationDocument,
-} from './schemas/event.schema/registration.schema';
+import { Registration, RegistrationDocument } from './schemas/event.schema/registration.schema';
 import { v4 as uuidv4 } from 'uuid';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { EventsGateway } from './events.gateway';
@@ -44,9 +37,7 @@ export class EventsService {
   }
 
   async update(id: string, updateEventDto: UpdateEventDto): Promise<any> {
-    const event = await this.eventModel
-      .findByIdAndUpdate(id, updateEventDto, { new: true })
-      .exec();
+    const event = await this.eventModel.findByIdAndUpdate(id, updateEventDto, { new: true }).exec();
     if (!event) throw new NotFoundException('Evento não encontrado');
     return event;
   }
@@ -84,10 +75,7 @@ export class EventsService {
     await registration.save();
 
     // Opcional: ainda manter no participants do evento
-    const user = await this.userModel
-      .findOne({ _id: userId })
-      .select('name')
-      .exec();
+    const user = await this.userModel.findOne({ _id: userId }).select('name').exec();
 
     event.participants.push({ user: userId, qrCode, userName: user?.name });
     await event.save();

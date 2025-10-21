@@ -6,13 +6,7 @@ import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class GeoUpdateService {
-  private readonly streetPrefixes = [
-    'Rua',
-    'Avenida',
-    'Travessa',
-    'Alameda',
-    'Praça',
-  ];
+  private readonly streetPrefixes = ['Rua', 'Avenida', 'Travessa', 'Alameda', 'Praça'];
 
   constructor(
     private readonly nominatim: NominatimService,
@@ -26,15 +20,11 @@ export class GeoUpdateService {
     let missionaries: User[];
     if (manual) {
       missionaries = await this.usersService.findAll();
-      console.log(
-        `🔍 Encontrados ${missionaries.length} missionários para atualização.`,
-      );
+      console.log(`🔍 Encontrados ${missionaries.length} missionários para atualização.`);
     } else {
       console.log('🟢 Atualização Cron disparada!');
       missionaries = await this.usersService.findWithoutCoordinates();
-      console.log(
-        `🔍 Encontrados ${missionaries.length} missionários sem coordenadas.`,
-      );
+      console.log(`🔍 Encontrados ${missionaries.length} missionários sem coordenadas.`);
     }
 
     for (const user of missionaries) {
@@ -48,14 +38,8 @@ export class GeoUpdateService {
 
         if (result && result.lat && result.lon) {
           coords = { lat: result.lat, lon: result.lon };
-          await this.usersService.updateCoordinates(
-            user._id.toString(),
-            coords.lat,
-            coords.lon,
-          );
-          console.log(
-            `✅ Atualizado: ${user.name} → (${coords.lat}, ${coords.lon})`,
-          );
+          await this.usersService.updateCoordinates(user._id.toString(), coords.lat, coords.lon);
+          console.log(`✅ Atualizado: ${user.name} → (${coords.lat}, ${coords.lon})`);
           break; // sai do loop, encontrou
         }
 

@@ -7,9 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Balance, BalanceSchema } from './entities/balance.entity';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Balance.name, schema: BalanceSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Balance.name, schema: BalanceSchema }])],
   controllers: [BalanceController],
   providers: [BalanceService],
   exports: [BalanceService],

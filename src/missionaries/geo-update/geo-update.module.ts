@@ -17,12 +17,7 @@ import { IncomesModule } from 'src/incomes/incomes.module';
     CategoriesModule,
   ],
   controllers: [GeoUpdateController],
-  providers: [
-    GeoUpdateService,
-    NominatimService,
-    GeoUpdateService,
-    UsersService,
-  ],
+  providers: [GeoUpdateService, NominatimService, GeoUpdateService, UsersService],
   exports: [GeoUpdateService],
 })
 export class GeoUpdateModule {}

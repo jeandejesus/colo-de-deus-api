@@ -126,10 +126,7 @@ export class CalendarService {
 
   async updateEvent(eventId: string, eventData: any) {
     console.log('data do front', eventData.start);
-    console.log(
-      'data convertida',
-      this.formatForGoogleCalendar(eventData.start),
-    );
+    console.log('data convertida', this.formatForGoogleCalendar(eventData.start));
 
     const res = await this.calendar.events.update({
       calendarId: this.calendarId,
@@ -177,9 +174,7 @@ export class CalendarService {
         eventId,
       });
 
-      await this.googleCalendarModel
-        .deleteOne({ googleEventId: eventId })
-        .exec();
+      await this.googleCalendarModel.deleteOne({ googleEventId: eventId }).exec();
 
       return { success: true, message: 'Evento deletado com sucesso' };
     } catch (err) {

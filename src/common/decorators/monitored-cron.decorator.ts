@@ -20,11 +20,7 @@ const cronLastExecution = new Gauge({
 });
 
 export function MonitoredCron(cronTime: string, options?: any) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     Cron(cronTime, options)(target, propertyKey, descriptor);

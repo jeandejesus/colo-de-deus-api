@@ -36,27 +36,17 @@ export class ExpensesService {
       }
     }
 
-    return this.expenseModel
-      .find(filter)
-      .populate('category')
-      .sort({ date: -1 })
-      .exec(); // ⬅️ Adicione .populate()
+    return this.expenseModel.find(filter).populate('category').sort({ date: -1 }).exec(); // ⬅️ Adicione .populate()
   }
   async findOne(id: string): Promise<Expense> {
-    const expense = await this.expenseModel
-      .findById(id)
-      .populate('category')
-      .exec();
+    const expense = await this.expenseModel.findById(id).populate('category').exec();
     if (!expense) {
       throw new NotFoundException(`Expense with ID "${id}" not found`);
     }
     return expense;
   }
 
-  async update(
-    id: string,
-    updateExpenseDto: UpdateExpensesDto,
-  ): Promise<Expense> {
+  async update(id: string, updateExpenseDto: UpdateExpensesDto): Promise<Expense> {
     const existingExpense = await this.findOne(id);
     const oldValue = existingExpense.value;
 

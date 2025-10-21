@@ -27,10 +27,7 @@ export class IncomesController {
   }
 
   @Get()
-  findAll(
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
-  ) {
+  findAll(@Query('startDate') startDate?: string, @Query('endDate') endDate?: string) {
     return this.incomesService.findAll(startDate, endDate);
   }
 

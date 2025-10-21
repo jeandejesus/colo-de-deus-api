@@ -17,8 +17,7 @@ export class GeoUpdateController {
     console.log('🟢 Atualização manual de coordenadas disparada!');
     await this.geoService.updateMissingCoordinates(true);
     return {
-      message:
-        'Atualização manual de coordenadas concluída. Confira os logs no servidor.',
+      message: 'Atualização manual de coordenadas concluída. Confira os logs no servidor.',
     };
   }
 }

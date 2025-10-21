@@ -27,10 +27,7 @@ export class ExpensesController {
   }
 
   @Get()
-  findAll(
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
-  ) {
+  findAll(@Query('startDate') startDate?: string, @Query('endDate') endDate?: string) {
     return this.expensesService.findAll(startDate, endDate);
   }
 

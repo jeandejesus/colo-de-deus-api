@@ -34,18 +34,11 @@ export class IncomesService {
         filter.date.$lte = new Date(endDate);
       }
     }
-    return this.incomeModel
-      .find(filter)
-      .populate('category')
-      .sort({ date: -1 })
-      .exec();
+    return this.incomeModel.find(filter).populate('category').sort({ date: -1 }).exec();
   }
 
   async findOne(id: string): Promise<Income> {
-    const income = await this.incomeModel
-      .findById(id)
-      .populate('category')
-      .exec();
+    const income = await this.incomeModel.findById(id).populate('category').exec();
     if (!income) {
       throw new NotFoundException(`Income with ID "${id}" not found`);
     }

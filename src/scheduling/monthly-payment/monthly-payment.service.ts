@@ -52,16 +52,14 @@ export class MonthlyPaymentService {
       return;
     }
 
-    this.logger.log(
-      `Encontrados ${usersToNotify.length} contribuintes para notificar hoje.`,
-    );
+    this.logger.log(`Encontrados ${usersToNotify.length} contribuintes para notificar hoje.`);
 
     for (const user of usersToNotify) {
       const payload = {
         userId: user._id.toString(),
         title: 'Lembrete de Contribuição Mensal 💰',
         body: `Olá, ${user.name}! Não se esqueça de sua contribuição mensal.`,
-        data: { type: 'monthly-contribution-reminder',url: 'http://colodedeuscwb.com.br/pix' },
+        data: { type: 'monthly-contribution-reminder', url: 'http://colodedeuscwb.com.br/pix' },
       };
 
       try {
@@ -71,14 +69,9 @@ export class MonthlyPaymentService {
           payload.body,
           payload.data,
         );
-        this.logger.log(
-          `Notificação de contribuição enviada para ${user.name}.`,
-        );
+        this.logger.log(`Notificação de contribuição enviada para ${user.name}.`);
       } catch (error) {
-        this.logger.error(
-          `Falha ao enviar notificação de contribuição para ${user.name}:`,
-          error,
-        );
+        this.logger.error(`Falha ao enviar notificação de contribuição para ${user.name}:`, error);
       }
     }
     this.logger.log('Cron job de contribuição mensal finalizado.');

@@ -10,9 +10,7 @@ export class NominatimService {
    * - 1ª tentativa: Google Geocoding API
    * - 2ª tentativa: Nominatim (OpenStreetMap)
    */
-  async getCoordinates(
-    address: string,
-  ): Promise<{ lat: number; lon: number } | null> {
+  async getCoordinates(address: string): Promise<{ lat: number; lon: number } | null> {
     if (!address) return null;
 
     console.log(`Buscando coordenadas para: "${address}"`);
@@ -38,9 +36,7 @@ export class NominatimService {
         return { lat: loc.lat, lon: loc.lng };
       }
 
-      console.log(
-        `Google não retornou resultados (${gData.status}) — tentando Nominatim...`,
-      );
+      console.log(`Google não retornou resultados (${gData.status}) — tentando Nominatim...`);
     } catch (err) {
       console.log(`❌ Erro no Google: ${err.message}`);
     }

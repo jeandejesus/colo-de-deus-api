@@ -1,15 +1,6 @@
 // src/notifications/notifications.controller.ts
 
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Request,
-  Get,
-  Query,
-  Param,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request, Get, Query, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { NotificationsService } from './notifications.service';
 // import { Role } from '../auth/schemas/user.schema';
@@ -37,27 +28,14 @@ export class NotificationsController {
 
   //@UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('send')
-  async send(
-    @Body() body: { userId: string; title: string; body: string; data: any },
-  ) {
-    await this.notificationsService.sendToUser(
-      body.userId,
-      body.title,
-      body.body,
-      body.data,
-    );
+  async send(@Body() body: { userId: string; title: string; body: string; data: any }) {
+    await this.notificationsService.sendToUser(body.userId, body.title, body.body, body.data);
     return { success: true, message: 'Notification sent successfully.' };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('get-status-notification/:endpoint')
-  async getNotificationStatus(
-    @Request() req,
-    @Param('endpoint') endpoint: string,
-  ) {
-    return await this.notificationsService.getNotificationStatus(
-      req.user._id,
-      endpoint,
-    );
+  async getNotificationStatus(@Request() req, @Param('endpoint') endpoint: string) {
+    return await this.notificationsService.getNotificationStatus(req.user._id, endpoint);
   }
 }

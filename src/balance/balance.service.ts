@@ -7,9 +7,7 @@ import { Balance } from './entities/balance.entity';
 
 @Injectable()
 export class BalanceService {
-  constructor(
-    @InjectModel(Balance.name) private balanceModel: Model<Balance>,
-  ) {}
+  constructor(@InjectModel(Balance.name) private balanceModel: Model<Balance>) {}
 
   async getBalance(): Promise<HydratedDocument<Balance>> {
     let balance = await this.balanceModel.findOne();

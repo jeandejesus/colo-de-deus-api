@@ -7,9 +7,7 @@ import { Category, CategoryDocument } from './schema/category.schema';
 
 @Injectable()
 export class CategoriesService {
-  constructor(
-    @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
-  ) {}
+  constructor(@InjectModel(Category.name) private categoryModel: Model<CategoryDocument>) {}
 
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     const createdCategory = new this.categoryModel(createCategoryDto);
@@ -32,10 +30,7 @@ export class CategoriesService {
     return category;
   }
 
-  async update(
-    id: string,
-    updateCategoryDto: UpdateCategoryDto,
-  ): Promise<Category> {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     const existingCategory = await this.categoryModel
       .findByIdAndUpdate(id, updateCategoryDto, { new: true })
       .exec();
@@ -61,9 +56,7 @@ export class CategoriesService {
         if (category) {
           return category._id.toString();
         } else {
-          throw new NotFoundException(
-            'Categoria de Pagamento Mensal não encontrada',
-          );
+          throw new NotFoundException('Categoria de Pagamento Mensal não encontrada');
         }
       });
   }
