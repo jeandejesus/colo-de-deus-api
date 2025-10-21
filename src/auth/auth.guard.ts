@@ -1,11 +1,6 @@
 // src/auth/guards/auth.guard.ts
 
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
@@ -32,9 +27,7 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
     const result = super.canActivate(context);
 
     if (typeof result === 'boolean' && result === false) {
-      throw new UnauthorizedException(
-        'Você não tem permissão para acessar esta rota.',
-      );
+      throw new UnauthorizedException('Você não tem permissão para acessar esta rota.');
     }
 
     return result;

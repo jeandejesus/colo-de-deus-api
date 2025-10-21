@@ -10,10 +10,7 @@ export class CreateExpensesDto {
   @IsNotEmpty({ message: 'O valor não pode ser vazio.' })
   value!: number;
 
-  @IsDateString(
-    {},
-    { message: 'A data deve ser uma string de data válida (ISO 8601).' },
-  )
+  @IsDateString({}, { message: 'A data deve ser uma string de data válida (ISO 8601).' })
   @IsNotEmpty({ message: 'A data não pode ser vazia.' })
   date!: Date;
 

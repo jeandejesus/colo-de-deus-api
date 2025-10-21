@@ -26,10 +26,7 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('joinEvent')
-  handleJoinEvent(
-    @MessageBody() eventId: string,
-    @ConnectedSocket() client: Socket,
-  ) {
+  handleJoinEvent(@MessageBody() eventId: string, @ConnectedSocket() client: Socket) {
     client.join(eventId);
   }
 

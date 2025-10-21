@@ -32,10 +32,7 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const user = await this.validateUser(
-      loginUserDto.email,
-      loginUserDto.password,
-    );
+    const user = await this.validateUser(loginUserDto.email, loginUserDto.password);
     if (!user) {
       throw new UnauthorizedException('E-mail ou senha inválidos.');
     }

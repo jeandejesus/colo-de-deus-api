@@ -44,13 +44,9 @@ export class BirthdayService {
       return;
     }
 
-    this.logger.log(
-      `Encontrados ${usersWithBirthday.length} aniversariante(s) hoje.`,
-    );
+    this.logger.log(`Encontrados ${usersWithBirthday.length} aniversariante(s) hoje.`);
 
-    const birthdayUserIds = usersWithBirthday.map((user) =>
-      user._id.toString(),
-    );
+    const birthdayUserIds = usersWithBirthday.map((user) => user._id.toString());
 
     // ➡️ Passo 2: Encontrar todos os outros usuários
     const otherUsers = await this.userModel
@@ -127,14 +123,9 @@ export class BirthdayService {
             payload.data,
           );
 
-          this.logger.log(
-            `Notificação de aniversário de ${name} enviada para ${user.name}.`,
-          );
+          this.logger.log(`Notificação de aniversário de ${name} enviada para ${user.name}.`);
         } catch (error) {
-          this.logger.error(
-            `Falha ao enviar alerta de ${name} para ${user.name}:`,
-            error,
-          );
+          this.logger.error(`Falha ao enviar alerta de ${name} para ${user.name}:`, error);
         }
       }
     }

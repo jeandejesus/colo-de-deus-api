@@ -19,12 +19,7 @@ export class MetricsService {
     this.requestCounter.labels(method, route, status.toString()).inc();
   }
 
-  observeResponseTime(
-    method: string,
-    route: string,
-    status: number,
-    time: number,
-  ) {
+  observeResponseTime(method: string, route: string, status: number, time: number) {
     this.responseTime.labels(method, route, status.toString()).observe(time);
   }
 }

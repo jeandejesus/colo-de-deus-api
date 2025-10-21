@@ -61,16 +61,10 @@ export class RelusLifeService {
             .then(() => {
               // ✅ Conta cada envio bem-sucedido
               cronSuccessCounter.inc({ job: jobName });
-              cronLastExecution.set(
-                { job: jobName },
-                Math.floor(Date.now() / 1000),
-              );
+              cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
             })
             .catch((error) =>
-              this.logger.error(
-                `Falha ao enviar notificação para ${user.name}:`,
-                error,
-              ),
+              this.logger.error(`Falha ao enviar notificação para ${user.name}:`, error),
             ),
         ),
       );
@@ -96,7 +90,7 @@ export class RelusLifeService {
         return;
       }
 
-      const urlToOpen = 'http://liturgia.cancaonova.com/pb/';
+      const urlToOpen = 'http://colodedeuscwb.com.br/liturgia';
 
       await Promise.all(
         usersToNotify.map((user) =>
@@ -110,18 +104,12 @@ export class RelusLifeService {
             .then(() => {
               // ✅ Conta cada envio bem-sucedido
               cronSuccessCounter.inc({ job: jobName });
-              cronLastExecution.set(
-                { job: jobName },
-                Math.floor(Date.now() / 1000),
-              );
+              cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
             })
             .catch((error) => {
               // ❌ Conta cada falha de envio
               cronFailureCounter.inc({ job: jobName });
-              this.logger.error(
-                `Falha ao enviar notificação para ${user.name}:`,
-                error,
-              );
+              this.logger.error(`Falha ao enviar notificação para ${user.name}:`, error);
             }),
         ),
       );
@@ -161,18 +149,12 @@ export class RelusLifeService {
             .then(() => {
               // ✅ Conta cada envio bem-sucedido
               cronSuccessCounter.inc({ job: jobName });
-              cronLastExecution.set(
-                { job: jobName },
-                Math.floor(Date.now() / 1000),
-              );
+              cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
             })
             .catch((error) => {
               cronFailureCounter.inc({ job: jobName });
 
-              this.logger.error(
-                `Falha ao enviar notificação para ${user.name}:`,
-                error,
-              );
+              this.logger.error(`Falha ao enviar notificação para ${user.name}:`, error);
             }),
         ),
       );
@@ -211,18 +193,12 @@ export class RelusLifeService {
             .then(() => {
               // ✅ Conta cada envio bem-sucedido
               cronSuccessCounter.inc({ job: jobName });
-              cronLastExecution.set(
-                { job: jobName },
-                Math.floor(Date.now() / 1000),
-              );
+              cronLastExecution.set({ job: jobName }, Math.floor(Date.now() / 1000));
             })
             .catch((error) => {
               cronFailureCounter.inc({ job: jobName });
 
-              this.logger.error(
-                `Falha ao enviar notificação para ${user.name}:`,
-                error,
-              );
+              this.logger.error(`Falha ao enviar notificação para ${user.name}:`, error);
             }),
         ),
       );

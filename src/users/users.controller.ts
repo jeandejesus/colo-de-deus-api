@@ -48,19 +48,13 @@ export class UsersController {
   }
 
   @Patch(':id/role')
-  updateRole(
-    @Param('id') id: string,
-    @Body() updateUserRoleDto: UpdateUserRoleDto,
-  ) {
+  updateRole(@Param('id') id: string, @Body() updateUserRoleDto: UpdateUserRoleDto) {
     return this.usersService.updateRole(id, updateUserRoleDto.role);
   }
 
   @Post('payment')
   @SetMetadata('roles', [UserRole.ADMIN, UserRole.FINANCEIRO])
-  async addPayment(
-    @Body('userId') userId: string,
-    @Body('amount') amount: number,
-  ) {
+  async addPayment(@Body('userId') userId: string, @Body('amount') amount: number) {
     const updatedUser = await this.usersService.addPayment(userId, amount);
     return { success: true, user: updatedUser };
   }
@@ -87,10 +81,7 @@ export class UsersController {
 
   @Post('reset')
   @Public()
-  async resetPassword(
-    @Body('token') token: string,
-    @Body('password') newPassword: string,
-  ) {
+  async resetPassword(@Body('token') token: string, @Body('password') newPassword: string) {
     await this.usersService.resetUserPassword(token, newPassword);
 
     return {

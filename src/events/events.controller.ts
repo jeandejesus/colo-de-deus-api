@@ -1,14 +1,6 @@
 // src/events/events.controller.ts
 
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  Put,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto/update-event.dto';
 import { EventsService } from './events.service';
@@ -49,10 +41,7 @@ export class EventsController {
 
   // Usuário se inscrever
   @Post(':eventId/subscribe/:userId')
-  subscribe(
-    @Param('eventId') eventId: string,
-    @Param('userId') userId: string,
-  ) {
+  subscribe(@Param('eventId') eventId: string, @Param('userId') userId: string) {
     return this.eventsService.subscribe(eventId, userId);
   }
 
@@ -68,10 +57,7 @@ export class EventsController {
   }
 
   @Get(':eventId/registration/:userId')
-  getUserEventQRCode(
-    @Param('eventId') eventId: string,
-    @Param('userId') userId: string,
-  ) {
+  getUserEventQRCode(@Param('eventId') eventId: string, @Param('userId') userId: string) {
     return this.eventsService.getUserQRCode(eventId, userId);
   }
 

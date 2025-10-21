@@ -1,11 +1,5 @@
 // src/all-exceptions.filter.ts
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Error as MongooseError } from 'mongoose'; // Importe a classe de erro do Mongoose
 
 @Catch()
@@ -25,10 +19,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const exceptionResponse = exception.getResponse();
 
       // Verifica se o erro do ValidationPipe tem múltiplos messages
-      if (
-        typeof exceptionResponse === 'object' &&
-        'message' in exceptionResponse
-      ) {
+      if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
         messages = Array.isArray(exceptionResponse.message)
           ? exceptionResponse.message
           : [exceptionResponse.message];
@@ -38,9 +29,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof MongooseError.ValidationError) {
       status = HttpStatus.BAD_REQUEST;
       message = 'Erro de validação de dados.';
-      messages = Object.values(exception.errors).map(
-        (error: any) => error.message,
-      );
+      messages = Object.values(exception.errors).map((error: any) => error.message);
     } else {
       console.error(exception); // Loga o erro desconhecido para depuração
     }

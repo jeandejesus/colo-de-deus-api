@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from './schemas/user.schema';
@@ -10,11 +7,7 @@ import { CategoriesService } from 'src/categories/categories.service';
 import * as crypto from 'crypto';
 import moment from 'moment';
 import * as bcrypt from 'bcrypt';
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NominatimService } from 'src/services/nominatim/nominatim.service';
 @Injectable()
@@ -96,10 +89,7 @@ export class UsersService {
     return users.map((user) => {
       const hasPayment = user.payments.some((payment) => {
         const paymentDate = new Date(payment.date);
-        return (
-          paymentDate.getMonth() === currentMonth &&
-          paymentDate.getFullYear() === currentYear
-        );
+        return paymentDate.getMonth() === currentMonth && paymentDate.getFullYear() === currentYear;
       });
 
       return {
@@ -163,10 +153,7 @@ export class UsersService {
     return user;
   }
 
-  async updateUser(
-    userId: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
     const updatePayload: any = { ...updateUserDto };
 
     // This block correctly handles the password
@@ -184,8 +171,7 @@ export class UsersService {
         updatePayload['address.street'] = updateUserDto.address.street;
       }
       if (updateUserDto.address.neighborhood) {
-        updatePayload['address.neighborhood'] =
-          updateUserDto.address.neighborhood;
+        updatePayload['address.neighborhood'] = updateUserDto.address.neighborhood;
       }
       if (updateUserDto.address.city) {
         updatePayload['address.city'] = updateUserDto.address.city;
@@ -211,11 +197,7 @@ export class UsersService {
   }
 
   // 🔹 Atualiza coordenadas do usuário
-  async updateCoordinates(
-    userId: string,
-    lat: number,
-    lon: number,
-  ): Promise<User> {
+  async updateCoordinates(userId: string, lat: number, lon: number): Promise<User> {
     const updatedUser = await this.userModel
       .findByIdAndUpdate(
         userId,
@@ -236,10 +218,7 @@ export class UsersService {
   async findWithoutCoordinates(): Promise<User[]> {
     return this.userModel
       .find({
-        $or: [
-          { 'address.location': { $exists: false } },
-          { 'address.location': null },
-        ],
+        $or: [{ 'address.location': { $exists: false } }, { 'address.location': null }],
       })
       .exec();
   }

@@ -8,10 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as webpush from 'web-push';
 import { ConfigService } from '@nestjs/config'; // Importe o ConfigService
-import {
-  PushSubscription,
-  PushSubscriptionDocument,
-} from './schema/push-subscription.schema';
+import { PushSubscription, PushSubscriptionDocument } from './schema/push-subscription.schema';
 
 @Injectable()
 export class NotificationsService {
@@ -27,8 +24,7 @@ export class NotificationsService {
       this.configService.get<string>('VAPID_PRIVATE_KEY'),
     );
 
-    const env =
-      this.configService.get<string>('VAPID_PUBLIC_KEY') ?? 'undefined';
+    const env = this.configService.get<string>('VAPID_PUBLIC_KEY') ?? 'undefined';
     console.log('VAPID_PUBLIC_KEY:', env);
   }
 
@@ -45,9 +41,7 @@ export class NotificationsService {
     });
 
     if (!subscriptionRecord) {
-      throw new InternalServerErrorException(
-        'User has no active subscription.',
-      );
+      throw new InternalServerErrorException('User has no active subscription.');
     }
 
     const payload = JSON.stringify({ title, body, data });
