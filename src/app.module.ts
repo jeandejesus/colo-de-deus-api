@@ -23,6 +23,7 @@ import { EventsModule } from './events/events.module';
 import { NominatimService } from './services/nominatim/nominatim.service';
 import { GeoUpdateService } from './missionaries/geo-update/geo-update.service';
 import { GeoUpdateModule } from './missionaries/geo-update/geo-update.module';
+import { LiturgiaModule } from './liturgia/liturgia.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { GeoUpdateModule } from './missionaries/geo-update/geo-update.module';
     CalendarModule,
     EventsModule,
     GeoUpdateModule,
+    LiturgiaModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],
