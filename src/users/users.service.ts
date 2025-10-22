@@ -23,7 +23,6 @@ export class UsersService {
     const fullAddress = `${createUserDto.address.street}, ${createUserDto.address.city}, ${createUserDto.address.state}`;
 
     const coords = await this.nominatimService.getCoordinates(fullAddress);
-    console.log('Coordenadas obtidas durante o registro:', coords);
 
     createUserDto.address.location = coords
       ? {
