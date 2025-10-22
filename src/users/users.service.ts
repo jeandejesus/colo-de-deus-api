@@ -20,6 +20,18 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: RegisterUserDto): Promise<UserDocument> {
+    const fullAddress = `${createUserDto.address.street}, ${createUserDto.address.city}, ${createUserDto.address.state}`;
+
+    const coords = await this.nominatimService.getCoordinates(fullAddress);
+    console.log('Coordenadas obtidas durante o registro:', coords);
+
+    createUserDto.address.location = coords
+      ? {
+          type: 'Point',
+          coordinates: [coords.lon, coords.lat],
+        }
+      : undefined;
+
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
     const createdUser = new this.userModel({

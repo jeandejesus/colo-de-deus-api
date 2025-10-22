@@ -14,6 +14,17 @@ import {
 import { Type } from 'class-transformer';
 import { VocationalYear } from 'src/enums/VocationalYearEnum.enum';
 
+export class LocationDto {
+  @IsOptional()
+  @IsString({ message: 'O tipo deve ser uma string' })
+  type?: 'Point';
+
+  @IsOptional()
+  @IsNumber({}, { each: true, message: 'As coordenadas devem ser números' })
+  @Type(() => Number)
+  coordinates?: [number, number]; // [longitude, latitude]
+}
+
 // DTO de Endereço (se não estiver em um arquivo separado)
 export class AddressDto {
   @IsString({ message: 'A rua deve ser uma string' })
@@ -31,6 +42,12 @@ export class AddressDto {
   @IsString({ message: 'O estado deve ser uma string' })
   @IsNotEmpty({ message: 'O estado não pode ser vazio' })
   state!: string;
+
+  @IsOptional()
+  @IsObject({ message: 'A localização deve ser um objeto' })
+  @ValidateNested()
+  @Type(() => LocationDto)
+  location?: LocationDto;
 }
 
 export class RegisterUserDto {
