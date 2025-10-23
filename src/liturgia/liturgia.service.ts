@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 /* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,7 +18,7 @@ export class LiturgiaService {
   constructor(@InjectModel(Liturgia.name) private liturgiaModel: Model<LiturgiaDocument>) {}
 
   // Atualiza a liturgia do dia
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReadings(): Promise<LiturgiaDocument> {
@@ -62,7 +62,7 @@ export class LiturgiaService {
   }
 
   // Atualiza a reflexão diária
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReflection(): Promise<LiturgiaDocument> {
