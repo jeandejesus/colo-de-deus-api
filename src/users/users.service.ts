@@ -57,7 +57,7 @@ export class UsersService {
     const skip = (page - 1) * limit;
 
     const [data, total] = await Promise.all([
-      this.userModel.find().sort({ name: -1 }).skip(skip).limit(limit).exec(),
+      this.userModel.find().sort({ name: 1 }).skip(skip).limit(limit).exec(),
       this.userModel.countDocuments().exec(),
     ]);
 
