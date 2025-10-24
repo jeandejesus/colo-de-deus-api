@@ -11,6 +11,9 @@ import {
   Post,
   Request,
   Query,
+  BadRequestException,
+  Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
@@ -21,6 +24,7 @@ import { EmailService } from 'src/email/email.service';
 import { Public } from 'src/common/decorators/public.decorator';
 // import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import mongoose from 'mongoose';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // ✅ Use your custom guard
@@ -39,6 +43,11 @@ export class UsersController {
   @Get('with-location')
   async findAllWithLocation() {
     return this.usersService.findAllWithLocation();
+  }
+
+  @Get('paginate')
+  findAllPaginate(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.usersService.findAllPaginate(page, limit);
   }
 
   @Get('location/near')
@@ -97,5 +106,19 @@ export class UsersController {
   @Patch('me')
   updateUser(@Request() req, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser(req.user._id, updateUserDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
+
+    const deleted = await this.usersService.remove(id);
+    if (!deleted) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return { message: 'Usuário removido com sucesso' };
   }
 }

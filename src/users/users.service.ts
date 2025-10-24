@@ -53,6 +53,22 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
+  async findAllPaginate(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.userModel.find().sort({ name: -1 }).skip(skip).limit(limit).exec(),
+      this.userModel.countDocuments().exec(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
   async updateRole(id: string, newRole: UserRole) {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
@@ -278,5 +294,10 @@ export class UsersService {
       count: nearbyUsers.length,
       users: nearbyUsers,
     };
+  }
+
+  async remove(id: string) {
+    const result = await this.userModel.findByIdAndDelete(id).exec();
+    return result; // retorna o doc deletado ou null se não existir
   }
 }
