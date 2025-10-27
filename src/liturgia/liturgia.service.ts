@@ -12,13 +12,14 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 @Injectable()
 export class LiturgiaService {
   private readonly logger = new Logger(LiturgiaService.name);
-  private readonly URL = 'https://liturgia.cancaonova.com/pb/';
+  private readonly URL =
+    'https://liturgia.cancaonova.com/pb/liturgia/30o-domingo-tempo-comum-domingo-2/?sDia=26&sMes=10&sAno=2025';
   private readonly REFLEXAO_URL = 'https://www.hablarcondios.org/pt/meditacaodiaria.aspx';
 
   constructor(@InjectModel(Liturgia.name) private liturgiaModel: Model<LiturgiaDocument>) {}
 
   // Atualiza a liturgia do dia
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReadings(): Promise<LiturgiaDocument> {

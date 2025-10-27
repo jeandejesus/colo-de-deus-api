@@ -15,7 +15,7 @@ export class Liturgia {
   salmo!: string;
 
   @Prop()
-  seguinda_leitura!: string;
+  segunda_leitura!: string;
 
   @Prop()
   evangelho!: string;
