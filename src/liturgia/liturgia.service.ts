@@ -18,11 +18,19 @@ export class LiturgiaService {
   constructor(@InjectModel(Liturgia.name) private liturgiaModel: Model<LiturgiaDocument>) {}
 
   // Atualiza a liturgia do dia
-  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReadings(): Promise<LiturgiaDocument> {
     try {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const exists = await this.liturgiaModel.findOne({ date: today }).exec();
+
+      if (exists?.primeira_leitura && exists?.salmo && exists?.evangelho) {
+        this.logger.log('Liturgia do dia já existe, pulando atualização');
+        return exists;
+      }
       const { data: html } = await axios.get(this.URL, { timeout: 30000 });
       const $ = cheerio.load(html);
 
@@ -45,8 +53,6 @@ export class LiturgiaService {
         fonte: this.URL,
       };
 
-      const today = new Date().toISOString().slice(0, 10);
-
       const updated = await this.liturgiaModel.findOneAndUpdate(
         { date: today },
         { ...data, date: today },
@@ -62,11 +68,19 @@ export class LiturgiaService {
   }
 
   // Atualiza a reflexão diária
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     timeZone: 'America/Sao_Paulo',
   })
   async updateDailyReflection(): Promise<LiturgiaDocument> {
     try {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const exists = await this.liturgiaModel.findOne({ date: today }).exec();
+
+      if (exists?.reflexao) {
+        this.logger.log('Reflxão do dia já existe, pulando atualização');
+        return exists;
+      }
       const { data: html } = await axios.get(this.REFLEXAO_URL, { timeout: 30000 });
       const $ = cheerio.load(html);
 
@@ -83,8 +97,6 @@ export class LiturgiaService {
         .join('\n');
 
       if (!reflexaoHtml) throw new Error('Não foi possível capturar a reflexão diária.');
-
-      const today = new Date().toISOString().slice(0, 10);
 
       const updated = await this.liturgiaModel.findOneAndUpdate(
         { date: today },
