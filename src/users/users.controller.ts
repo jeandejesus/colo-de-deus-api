@@ -45,6 +45,11 @@ export class UsersController {
     return this.usersService.findAllWithLocation();
   }
 
+  @Get('monthly-contribution-progress')
+  async getMonthlyContributionProgress() {
+    return this.usersService.getMonthlyContributionProgress();
+  }
+
   @Get('paginate')
   findAllPaginate(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
     return this.usersService.findAllPaginate(page, limit);

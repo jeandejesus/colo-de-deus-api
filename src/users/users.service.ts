@@ -300,4 +300,30 @@ export class UsersService {
     const result = await this.userModel.findByIdAndDelete(id).exec();
     return result; // retorna o doc deletado ou null se não existir
   }
+
+  async getMonthlyContributionProgress() {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const totalUsers = await this.userModel.countDocuments();
+
+    const usersWhoPaid = await this.userModel.countDocuments({
+      payments: {
+        $elemMatch: {
+          date: { $gte: startOfMonth, $lte: endOfMonth },
+        },
+      },
+    });
+
+    const paidPercentage = totalUsers > 0 ? (usersWhoPaid / totalUsers) * 100 : 0;
+    const remainingPercentage = 100 - paidPercentage;
+
+    return {
+      totalUsers,
+      usersWhoPaid,
+      paidPercentage: parseFloat(paidPercentage.toFixed(1)),
+      remainingPercentage: parseFloat(remainingPercentage.toFixed(1)),
+    };
+  }
 }
