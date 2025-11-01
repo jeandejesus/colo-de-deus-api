@@ -10,6 +10,8 @@ import * as bcrypt from 'bcrypt';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NominatimService } from 'src/services/nominatim/nominatim.service';
+import dayjs from 'dayjs';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -301,13 +303,17 @@ export class UsersService {
     return result; // retorna o doc deletado ou null se não existir
   }
 
-  async getMonthlyContributionProgress() {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  async getMonthlyContributionProgress(start?: string, end?: string) {
+    const now = dayjs();
 
+    // Se não vierem datas, usa o mês atual
+    const startOfMonth = start ? dayjs(start).toDate() : now.startOf('month').toDate();
+    const endOfMonth = end ? dayjs(end).toDate() : now.endOf('month').toDate();
+
+    // Conta total de usuários
     const totalUsers = await this.userModel.countDocuments();
 
+    // Conta quantos pagaram dentro do intervalo
     const usersWhoPaid = await this.userModel.countDocuments({
       payments: {
         $elemMatch: {
@@ -317,6 +323,7 @@ export class UsersService {
     });
 
     const paidPercentage = totalUsers > 0 ? (usersWhoPaid / totalUsers) * 100 : 0;
+
     const remainingPercentage = 100 - paidPercentage;
 
     return {
@@ -324,6 +331,8 @@ export class UsersService {
       usersWhoPaid,
       paidPercentage: parseFloat(paidPercentage.toFixed(1)),
       remainingPercentage: parseFloat(remainingPercentage.toFixed(1)),
+      start: startOfMonth,
+      end: endOfMonth,
     };
   }
 }

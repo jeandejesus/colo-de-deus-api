@@ -46,8 +46,8 @@ export class UsersController {
   }
 
   @Get('monthly-contribution-progress')
-  async getMonthlyContributionProgress() {
-    return this.usersService.getMonthlyContributionProgress();
+  async getMonthlyContributionProgress(@Query('start') start?: string, @Query('end') end?: string) {
+    return this.usersService.getMonthlyContributionProgress(start, end);
   }
 
   @Get('paginate')
